@@ -1,0 +1,69 @@
+group 'com.elikill58'
+version '1.0'
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven {
+            name = 'gradle-plugins'
+            url = 'https://plugins.gradle.org/m2'
+        }
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.2'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven {
+        name = 'spigot'
+        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+    }
+    maven {
+        name = 'sonatype'
+        url = 'https://oss.sonatype.org/content/groups/public/'
+    }
+}
+
+dependencies {
+    compileOnly 'org.spigotmc:spigot-api:1.16.1-R0.1-SNAPSHOT'
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+archivesBaseName = 'GalloraAPI'
+
+sourceSets.main {
+    java.srcDirs = ['src']
+    resources.srcDirs = ['resources']
+}
+
+compileJava.options.encoding = 'UTF-8'
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        // Only process this file, if world_base is processed its files are somehow corrupted
+        include '*.yml'
+        filter ReplaceTokens, tokens: [version: version]
+    }
+}
+
+
+shadowJar {
+    archiveName = archivesBaseName + ".jar"
+
+	def pluginDir = System.getProperty('plugin.dir')
+	if (pluginDir != null) {
+	    destinationDir = file(pluginDir)
+	}
+}
