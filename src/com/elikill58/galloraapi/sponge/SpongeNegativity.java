@@ -1,0 +1,331 @@
+package com.elikill58.galloraapi.sponge;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.Supplier;
+
+import org.slf4j.Logger;
+import org.spongepowered.api.Platform.Type;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.CommandCallable;
+import org.spongepowered.api.command.CommandManager;
+import org.spongepowered.api.command.CommandMapping;
+import org.spongepowered.api.config.ConfigDir;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.EventManager;
+import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.filter.cause.First;
+import org.spongepowered.api.event.game.GameReloadEvent;
+import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
+import org.spongepowered.api.event.game.state.GameStartingServerEvent;
+import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
+import org.spongepowered.api.event.network.ClientConnectionEvent;
+import org.spongepowered.api.network.ChannelBinding.RawDataChannel;
+import org.spongepowered.api.network.ChannelBuf;
+import org.spongepowered.api.network.PlayerConnection;
+import org.spongepowered.api.network.RawDataListener;
+import org.spongepowered.api.network.RemoteConnection;
+import org.spongepowered.api.plugin.Dependency;
+import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.scheduler.Task;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.TextActions;
+import org.spongepowered.api.text.format.TextColors;
+
+import com.elikill58.galloraapi.api.GalloraPlayer;
+import com.elikill58.galloraapi.sponge.impl.entity.SpongePlayer;
+import com.elikill58.galloraapi.sponge.listeners.BlockListeners;
+import com.elikill58.galloraapi.sponge.listeners.CommandsListeners;
+import com.elikill58.galloraapi.sponge.listeners.EntityListeners;
+import com.elikill58.galloraapi.sponge.listeners.FightManager;
+import com.elikill58.galloraapi.sponge.listeners.InventoryListeners;
+import com.elikill58.galloraapi.sponge.listeners.PlayersListeners;
+import com.elikill58.galloraapi.sponge.packets.NegativityPacketManager;
+import com.elikill58.galloraapi.sponge.utils.Utils;
+import com.elikill58.galloraapi.universal.Adapter;
+import com.elikill58.galloraapi.universal.Database;
+import com.elikill58.galloraapi.universal.ProxyCompanionManager;
+import com.elikill58.galloraapi.universal.Stats;
+import com.elikill58.galloraapi.universal.Stats.StatsType;
+import com.elikill58.galloraapi.universal.account.NegativityAccountManager;
+import com.elikill58.galloraapi.universal.dataStorage.NegativityAccountStorage;
+import com.elikill58.galloraapi.universal.permissions.Perm;
+import com.elikill58.galloraapi.universal.pluginMessages.NegativityMessage;
+import com.elikill58.galloraapi.universal.pluginMessages.NegativityMessagesManager;
+import com.elikill58.galloraapi.universal.pluginMessages.ProxyPingMessage;
+import com.elikill58.galloraapi.universal.pluginMessages.ReportMessage;
+import com.elikill58.galloraapi.universal.utils.UniversalUtils;
+import com.google.inject.Inject;
+
+@Plugin(id = "negativity", name = "Negativity", version = UniversalUtils.NEGATIVITY_VERSION, description = "It's an Advanced AntiCheat Detection", authors = { "Elikill58", "RedNesto" }, dependencies = {
+		@Dependency(id = "packetgate") })
+public class SpongeNegativity {
+
+	public static SpongeNegativity INSTANCE;
+
+	@Inject
+	private PluginContainer plugin;
+	@Inject
+	public Logger logger;
+	@Inject
+	@ConfigDir(sharedRoot = false)
+	private Path configDir;
+	private NegativityPacketManager packetManager;
+	public static RawDataChannel channel = null, fmlChannel = null;
+
+	private final Map<String, CommandMapping> reloadableCommands = new HashMap<>();
+
+	public PluginContainer getContainer() {
+		return plugin;
+	}
+
+	public static boolean hasPacketGate = false, hasPrecogs = false;
+
+	@Listener
+	public void onPreInit(GamePreInitializationEvent event) {
+		INSTANCE = this;
+		
+		new File(configDir.toFile().getAbsolutePath() + File.separator + "user" + File.separator + "proof").mkdirs();
+		
+		
+		Adapter.setAdapter(new SpongeAdapter(this));
+		
+		EventManager eventManager = Sponge.getEventManager();
+		eventManager.registerListeners(this, new FightManager());
+		eventManager.registerListeners(this, new BlockListeners());
+		eventManager.registerListeners(this, new EntityListeners());
+		eventManager.registerListeners(this, new InventoryListeners());
+		eventManager.registerListeners(this, new PlayersListeners());
+		
+		NegativityAccountStorage.setDefaultStorage("file");
+
+		if(SpongeUpdateChecker.ifUpdateAvailable()) {
+			getLogger().info("New version available (" + SpongeUpdateChecker.getVersionString() + ") : " + SpongeUpdateChecker.getDownloadUrl());
+		}
+
+		if (!ProxyCompanionManager.isIntegrationEnabled())
+			Task.builder().async().delayTicks(1).execute(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						Stats.loadStats();
+						Stats.updateStats(StatsType.ONLINE, 1 + "");
+						Stats.updateStats(StatsType.PORT, Sponge.getServer().getBoundAddress().get().getPort() + "");
+					} catch (Exception e) {
+
+					}
+				}
+			}).submit(this);
+		
+		plugin.getLogger().info("Negativity v" + plugin.getVersion().get() + " loaded.");
+	}
+
+	@Listener
+	public void onGameStop(GameStoppingServerEvent e) {
+		GalloraPlayer.getAllPlayers().values().forEach(GalloraPlayer::destroy);
+		if (!ProxyCompanionManager.isIntegrationEnabled()) {
+			Task.builder().async().delayTicks(1).execute(new Runnable() {
+				@Override
+				public void run() {
+					Stats.updateStats(StatsType.ONLINE, 0 + "");
+				}
+			}).submit(this);
+		}
+		Database.close();
+	}
+
+	@Listener
+	public void onGameStart(GameStartingServerEvent e) {
+		packetManager = new NegativityPacketManager(this);
+		try {
+			Class.forName("com.me4502.precogs.Precogs");
+			hasPrecogs = true;
+		} catch (ClassNotFoundException e1) {
+			hasPrecogs = false;
+		}
+		try {
+			Class.forName("net.minecraftforge.fml.common.network.handshake.NetworkDispatcher");
+			SpongeForgeSupport.isOnSpongeForge = true;
+		} catch (ClassNotFoundException e1) {
+			SpongeForgeSupport.isOnSpongeForge = false;
+		}
+
+		loadCommands(false);
+
+		channel = Sponge.getChannelRegistrar().createRawChannel(this, NegativityMessagesManager.CHANNEL_ID);
+		channel.addListener(new ProxyCompanionListener());
+		if (Sponge.getChannelRegistrar().isChannelAvailable("FML|HS")) {
+			fmlChannel = Sponge.getChannelRegistrar().getOrCreateRaw(this, "FML|HS");
+			fmlChannel.addListener(new FmlRawDataListener());
+		}
+	}
+
+	public void reloadCommands() {
+		loadCommands(true);
+	}
+
+	private void loadCommands(boolean reload) {
+		CommandManager cmd = Sponge.getCommandManager();
+
+		if (!reload) {
+			cmd.register(this, new CommandsListeners("negativity"), "negativity", "neg", "n");
+		}
+
+		reloadCommand("mod", cmd, () -> new CommandsListeners("nmod"), "nmod", "mod");
+		reloadCommand("kick", cmd, () -> new CommandsListeners("nkick"), "nkick", "kick");
+		reloadCommand("lang", cmd, () -> new CommandsListeners("nlang"), "nlang", "lang");
+		reloadCommand("report", cmd, () -> new CommandsListeners("nreport"), "nreport", "report", "repot");
+		reloadCommand("ban", cmd, () -> new CommandsListeners("nban"), "nban", "negban", "ban");
+		reloadCommand("unban", cmd, () -> new CommandsListeners("nunban"), "nunban", "negunban", "unban");
+	}
+
+	private void reloadCommand(String configKey, CommandManager manager, Supplier<CommandCallable> command, String... aliases) {
+		reloadCommand(configKey, Adapter.getAdapter().getConfig().getBoolean("commands." + configKey, true), manager, command, aliases);
+	}
+
+	private void reloadCommand(String mappingKey, boolean enabled, CommandManager manager, Supplier<CommandCallable> command, String... aliases) {
+		if (enabled) {
+			if (!reloadableCommands.containsKey(mappingKey)) {
+				manager.register(this, command.get(), aliases).ifPresent(mapping -> reloadableCommands.put(mappingKey, mapping));
+			}
+		} else {
+			CommandMapping mapping = reloadableCommands.remove(mappingKey);
+			if (mapping != null) {
+				manager.removeMapping(mapping);
+			}
+		}
+	}
+
+	@Listener
+	public void onGameReload(GameReloadEvent event) {
+		Adapter.getAdapter().reload();
+	}
+
+	@Listener
+	public void onJoin(ClientConnectionEvent.Join e, @First Player p) {
+		GalloraPlayer np = GalloraPlayer.getPlayer(p.getUniqueId(), () -> new SpongePlayer(p));
+		if (Perm.hasPerm(np, Perm.SHOW_REPORT)) {
+			if (!hasPacketGate) {
+				try {
+					p.sendMessage(Text.builder("[Negativity] Dependency not found. Please, download it here.")
+							.onHover(TextActions.showText(Text.of("Click here")))
+							.onClick(
+									TextActions.openUrl(new URL("https://github.com/CrushedPixel/PacketGate/releases")))
+							.color(TextColors.RED).build());
+				} catch (MalformedURLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+	}
+
+	@Listener
+	public void onLeave(ClientConnectionEvent.Disconnect e, @First Player p) {
+		Task.builder().delayTicks(5).execute(() -> {
+			GalloraPlayer.removeFromCache(p.getUniqueId());
+			NegativityAccountManager accountManager = Adapter.getAdapter().getAccountManager();
+			UUID playerId = p.getUniqueId();
+			accountManager.save(playerId);
+			accountManager.dispose(playerId);
+		}).submit(this);
+	}
+
+	public static SpongeNegativity getInstance() {
+		return INSTANCE;
+	}
+
+	public Path getDataFolder() {
+		return configDir;
+	}
+
+	public NegativityPacketManager getPacketManager() {
+		return packetManager;
+	}
+
+	public Logger getLogger() {
+		return plugin.getLogger();
+	}
+
+	public static void sendReportMessage(Player p, String reportMsg, String nameReported) {
+		channel.sendTo(p, (payload) -> {
+			try {
+				ReportMessage message = new ReportMessage(nameReported, reportMsg, p.getName());
+				payload.writeBytes(NegativityMessagesManager.writeMessage(message));
+			} catch (IOException e) {
+				SpongeNegativity.getInstance().getLogger().error("Could not send report message to the proxy.", e);
+			}
+		});
+	}
+
+	public static void sendProxyPing(Player player) {
+		ProxyCompanionManager.searchedCompanion = true;
+		channel.sendTo(player, (buffer) -> {
+			try {
+				buffer.writeBytes(NegativityMessagesManager.writeMessage(new ProxyPingMessage(NegativityMessagesManager.PROTOCOL_VERSION)));
+			} catch (IOException ex) {
+				SpongeNegativity.getInstance().getLogger().error("Could not write ProxyPingMessage.", ex);
+			}
+		});
+	}
+
+	public static void sendPluginMessage(byte[] rawMessage) {
+		Player player = Utils.getFirstOnlinePlayer();
+		if (player != null) {
+			channel.sendTo(player, payload -> payload.writeBytes(rawMessage));
+		} else {
+			getInstance().getLogger().error("Could not send plugin message to proxy because there are no player online.");
+		}
+	}
+
+	public static void trySendProxyPing() {
+		Iterator<Player> onlinePlayers = Sponge.getServer().getOnlinePlayers().iterator();
+		if (onlinePlayers.hasNext()) {
+			sendProxyPing(onlinePlayers.next());
+		}
+	}
+
+	private static class FmlRawDataListener implements RawDataListener {
+
+		@Override
+		public void handlePayload(ChannelBuf channelBuf, RemoteConnection connection, Type side) {
+			if (!(connection instanceof PlayerConnection)) {
+				return;
+			}
+
+			Player player = ((PlayerConnection) connection).getPlayer();
+			byte[] rawData = channelBuf.readBytes(channelBuf.available());
+			HashMap<String, String> playerMods = GalloraPlayer.getPlayer(player.getUniqueId(), () -> new SpongePlayer(player)).MODS;
+			playerMods.clear();
+			playerMods.putAll(Utils.getModsNameVersionFromMessage(new String(rawData, StandardCharsets.UTF_8)));
+		}
+	}
+
+	private static class ProxyCompanionListener implements RawDataListener {
+
+		@Override
+		public void handlePayload(ChannelBuf data, RemoteConnection connection, Type side) {
+			byte[] rawData = data.readBytes(data.available());
+			NegativityMessage message;
+			try {
+				message = NegativityMessagesManager.readMessage(rawData);
+			} catch (IOException e) {
+				SpongeNegativity.getInstance().getLogger().error("Failed to read proxy companion message.", e);
+				return;
+			}
+
+			if (message instanceof ProxyPingMessage) {
+				ProxyPingMessage pingMessage = (ProxyPingMessage) message;
+				ProxyCompanionManager.foundCompanion(pingMessage.getProtocol());
+			}
+		}
+	}
+}
