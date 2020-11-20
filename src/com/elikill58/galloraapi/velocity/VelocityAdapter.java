@@ -40,8 +40,15 @@ public class VelocityAdapter extends ProxyAdapter {
 	public VelocityAdapter(VelocityNegativity pl) {
 		this.pl = pl;
 		this.config = UniversalUtils.loadConfig(new File(pl.getDataFolder(), "config.yml"), "config_bungee.yml");
-		this.translationProviderFactory = new NegativityTranslationProviderFactory(pl.getDataFolder().toPath().resolve("lang"), "NegativityProxy", "CheatHover");
+		this.translationProviderFactory = new NegativityTranslationProviderFactory(pl.getDataFolder().toPath().resolve("lang"));
 		this.logger = new Slf4jLoggerAdapter(pl.getLogger());
+		
+		try {
+			Class.forName("net.kyori.adventure.text.Component");
+		} catch (ClassNotFoundException e) {
+			logger.error("----- GalloraAPI -----");
+			logger.error("Please, upgrade to (at least) Velocity 1.1.0.");
+		}
 	}
 	
 	@Override
@@ -103,7 +110,7 @@ public class VelocityAdapter extends ProxyAdapter {
 
 	@Override
 	public void runConsoleCommand(String cmd) {
-		pl.getServer().getCommandManager().execute(pl.getServer().getConsoleCommandSource(), cmd);
+		pl.getServer().getCommandManager().executeAsync(pl.getServer().getConsoleCommandSource(), cmd);
 	}
 
 	@Override

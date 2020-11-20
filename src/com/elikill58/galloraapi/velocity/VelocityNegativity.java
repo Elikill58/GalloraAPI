@@ -7,8 +7,6 @@ import org.slf4j.Logger;
 
 import com.elikill58.galloraapi.universal.Adapter;
 import com.elikill58.galloraapi.universal.Database;
-import com.elikill58.galloraapi.universal.Stats;
-import com.elikill58.galloraapi.universal.Stats.StatsType;
 import com.elikill58.galloraapi.universal.dataStorage.NegativityAccountStorage;
 import com.elikill58.galloraapi.universal.pluginMessages.NegativityMessagesManager;
 import com.elikill58.galloraapi.universal.utils.UniversalUtils;
@@ -42,33 +40,23 @@ public class VelocityNegativity {
     public Logger getLogger() {
     	return logger;
     }
-
-    @SuppressWarnings("deprecation")
+    
 	@Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
     	getLogger().info("Loading Negativity");
 	    server.getEventManager().register(this, new VelocityListeners());
 	    server.getChannelRegistrar().register(NEGATIVITY_CHANNEL_ID);
-	    server.getCommandManager().register(new VNegativityCommand(), "vnegativity");
 	    
 		Adapter.setAdapter(new VelocityAdapter(this));
 
 		NegativityAccountStorage.setDefaultStorage("database");
 
-		Stats.loadStats();
-		Stats.updateStats(StatsType.ONLINE, 1 + "");
-		try {
-			Stats.updateStats(StatsType.PORT, getServer().getBoundAddress().getPort() + "");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
     	getLogger().info("Negativity enabled");
 	}
 
     @Subscribe
     public void onProxyDisable(ProxyShutdownEvent e) {
 		Database.close();
-		Stats.updateStats(StatsType.ONLINE, 0 + "");
 	}
 
     public final InputStream getResourceAsStream(final String name) {

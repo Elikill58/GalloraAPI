@@ -60,7 +60,7 @@ public class SpigotPlayer extends Player {
 
 	@Override
 	public boolean isOnGround() {
-		return ((org.bukkit.entity.Player) p).isOnGround();
+		return ((org.bukkit.entity.Entity) p).isOnGround();
 	}
 
 	@Override

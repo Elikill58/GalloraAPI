@@ -41,6 +41,7 @@ public class InventoryListeners implements Listener {
 	private InventoryAction getAction(ClickType type) {
 		switch (type) {
 		case CONTROL_DROP:
+		case SWAP_OFFHAND:
 		case DROP:
 			return InventoryAction.DROP;
 		case CREATIVE:

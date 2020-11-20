@@ -19,7 +19,7 @@ import com.elikill58.galloraapi.api.potion.PotionEffectType;
 import com.elikill58.galloraapi.universal.Version;
 import com.elikill58.galloraapi.velocity.VelocityNegativity;
 
-import net.kyori.text.TextComponent;
+import net.kyori.adventure.text.Component;
 
 public class VelocityPlayer extends Player {
 
@@ -61,7 +61,7 @@ public class VelocityPlayer extends Player {
 
 	@Override
 	public void sendMessage(String msg) {
-		pp.sendMessage(TextComponent.of(msg));
+		pp.sendMessage(Component.text(msg));
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class VelocityPlayer extends Player {
 	
 	@Override
 	public void kick(String reason) {
-		pp.disconnect(TextComponent.of(reason));
+		pp.disconnect(Component.text(reason));
 	}
 
 	@Override

@@ -64,7 +64,7 @@ public class PlayersListeners implements Listener {
 			return;
 		if(p.getLocation().clone().subtract(0, 1, 0).getBlock().getType().name().contains("SLIME")) {
 			np.isUsingSlimeBlock = true;
-		} else if(np.isUsingSlimeBlock && (p.isOnGround() && !p.getLocation().clone().subtract(0, 1, 0).getBlock().getType().name().contains("AIR")))
+		} else if(np.isUsingSlimeBlock && (((org.bukkit.entity.Entity) p).isOnGround() && !p.getLocation().clone().subtract(0, 1, 0).getBlock().getType().name().contains("AIR")))
 			np.isUsingSlimeBlock = false;
 	}
 	

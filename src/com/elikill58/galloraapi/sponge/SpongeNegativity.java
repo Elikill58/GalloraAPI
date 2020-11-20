@@ -54,8 +54,6 @@ import com.elikill58.galloraapi.sponge.utils.Utils;
 import com.elikill58.galloraapi.universal.Adapter;
 import com.elikill58.galloraapi.universal.Database;
 import com.elikill58.galloraapi.universal.ProxyCompanionManager;
-import com.elikill58.galloraapi.universal.Stats;
-import com.elikill58.galloraapi.universal.Stats.StatsType;
 import com.elikill58.galloraapi.universal.account.NegativityAccountManager;
 import com.elikill58.galloraapi.universal.dataStorage.NegativityAccountStorage;
 import com.elikill58.galloraapi.universal.permissions.Perm;
@@ -107,24 +105,6 @@ public class SpongeNegativity {
 		eventManager.registerListeners(this, new PlayersListeners());
 		
 		NegativityAccountStorage.setDefaultStorage("file");
-
-		if(SpongeUpdateChecker.ifUpdateAvailable()) {
-			getLogger().info("New version available (" + SpongeUpdateChecker.getVersionString() + ") : " + SpongeUpdateChecker.getDownloadUrl());
-		}
-
-		if (!ProxyCompanionManager.isIntegrationEnabled())
-			Task.builder().async().delayTicks(1).execute(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						Stats.loadStats();
-						Stats.updateStats(StatsType.ONLINE, 1 + "");
-						Stats.updateStats(StatsType.PORT, Sponge.getServer().getBoundAddress().get().getPort() + "");
-					} catch (Exception e) {
-
-					}
-				}
-			}).submit(this);
 		
 		plugin.getLogger().info("Negativity v" + plugin.getVersion().get() + " loaded.");
 	}
@@ -132,14 +112,6 @@ public class SpongeNegativity {
 	@Listener
 	public void onGameStop(GameStoppingServerEvent e) {
 		GalloraPlayer.getAllPlayers().values().forEach(GalloraPlayer::destroy);
-		if (!ProxyCompanionManager.isIntegrationEnabled()) {
-			Task.builder().async().delayTicks(1).execute(new Runnable() {
-				@Override
-				public void run() {
-					Stats.updateStats(StatsType.ONLINE, 0 + "");
-				}
-			}).submit(this);
-		}
 		Database.close();
 	}
 

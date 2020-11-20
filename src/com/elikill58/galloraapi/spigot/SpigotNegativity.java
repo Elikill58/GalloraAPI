@@ -33,8 +33,6 @@ import com.elikill58.galloraapi.spigot.utils.Utils;
 import com.elikill58.galloraapi.universal.Adapter;
 import com.elikill58.galloraapi.universal.Database;
 import com.elikill58.galloraapi.universal.ProxyCompanionManager;
-import com.elikill58.galloraapi.universal.Stats;
-import com.elikill58.galloraapi.universal.Stats.StatsType;
 import com.elikill58.galloraapi.universal.Version;
 import com.elikill58.galloraapi.universal.dataStorage.NegativityAccountStorage;
 import com.elikill58.galloraapi.universal.pluginMessages.NegativityMessagesManager;
@@ -111,14 +109,6 @@ public class SpigotNegativity extends JavaPlugin {
 			getLogger().info("New version available (" + UniversalUtils.getLatestVersion().orElse("unknow")
 					+ "). Download it here: https://www.spigotmc.org/resources/48399/");
 		}
-		getServer().getScheduler().runTaskAsynchronously(this, new Runnable() {
-			@Override
-			public void run() {
-				Stats.loadStats();
-				Stats.updateStats(StatsType.ONLINE, 1 + "");
-				Stats.updateStats(StatsType.PORT, Bukkit.getServer().getPort() + "");
-			}
-		});
 		
 		NegativityAccountStorage.setDefaultStorage("file");
 	}
@@ -177,7 +167,6 @@ public class SpigotNegativity extends JavaPlugin {
 			GalloraPlayer.removeFromCache(p.getUniqueId());
 		}
 		Database.close();
-		Stats.updateStats(StatsType.ONLINE, 0 + "");
 		packetManager.getPacketManager().clear();
 	}
 	
