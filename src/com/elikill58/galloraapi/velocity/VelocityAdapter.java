@@ -95,7 +95,7 @@ public class VelocityAdapter extends ProxyAdapter {
 	
 	@Override
 	public String getPluginVersion() {
-		return UniversalUtils.NEGATIVITY_VERSION;
+		return UniversalUtils.GALLORA_VERSION;
 	}
 
 	@Override

@@ -18,7 +18,7 @@ import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.messages.LegacyChannelIdentifier;
 
-@Plugin(id = "negativity", name = "Negativity", version = UniversalUtils.NEGATIVITY_VERSION,
+@Plugin(id = "negativity", name = "Negativity", version = UniversalUtils.GALLORA_VERSION,
         description = "It's an Advanced AntiCheat Detection", authors = {"Elikill58", "RedNesto"})
 public class VelocityNegativity {
 

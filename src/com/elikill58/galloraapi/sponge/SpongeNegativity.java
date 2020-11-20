@@ -60,11 +60,10 @@ import com.elikill58.galloraapi.universal.permissions.Perm;
 import com.elikill58.galloraapi.universal.pluginMessages.NegativityMessage;
 import com.elikill58.galloraapi.universal.pluginMessages.NegativityMessagesManager;
 import com.elikill58.galloraapi.universal.pluginMessages.ProxyPingMessage;
-import com.elikill58.galloraapi.universal.pluginMessages.ReportMessage;
 import com.elikill58.galloraapi.universal.utils.UniversalUtils;
 import com.google.inject.Inject;
 
-@Plugin(id = "negativity", name = "Negativity", version = UniversalUtils.NEGATIVITY_VERSION, description = "It's an Advanced AntiCheat Detection", authors = { "Elikill58", "RedNesto" }, dependencies = {
+@Plugin(id = "negativity", name = "Negativity", version = UniversalUtils.GALLORA_VERSION, description = "It's an Advanced AntiCheat Detection", authors = { "Elikill58", "RedNesto" }, dependencies = {
 		@Dependency(id = "packetgate") })
 public class SpongeNegativity {
 
@@ -225,17 +224,6 @@ public class SpongeNegativity {
 
 	public Logger getLogger() {
 		return plugin.getLogger();
-	}
-
-	public static void sendReportMessage(Player p, String reportMsg, String nameReported) {
-		channel.sendTo(p, (payload) -> {
-			try {
-				ReportMessage message = new ReportMessage(nameReported, reportMsg, p.getName());
-				payload.writeBytes(NegativityMessagesManager.writeMessage(message));
-			} catch (IOException e) {
-				SpongeNegativity.getInstance().getLogger().error("Could not send report message to the proxy.", e);
-			}
-		});
 	}
 
 	public static void sendProxyPing(Player player) {

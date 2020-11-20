@@ -3,7 +3,6 @@ package com.elikill58.galloraapi.spigot;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -11,7 +10,6 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.SimpleCommandMap;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -37,9 +35,7 @@ import com.elikill58.galloraapi.universal.Version;
 import com.elikill58.galloraapi.universal.dataStorage.NegativityAccountStorage;
 import com.elikill58.galloraapi.universal.pluginMessages.NegativityMessagesManager;
 import com.elikill58.galloraapi.universal.pluginMessages.ProxyPingMessage;
-import com.elikill58.galloraapi.universal.pluginMessages.ReportMessage;
 import com.elikill58.galloraapi.universal.utils.ReflectionUtils;
-import com.elikill58.galloraapi.universal.utils.UniversalUtils;
 
 public class SpigotNegativity extends JavaPlugin {
 
@@ -105,11 +101,6 @@ public class SpigotNegativity extends JavaPlugin {
 
 		loadCommand();
 		
-		if (!UniversalUtils.isLatestVersion(getDescription().getVersion())) {
-			getLogger().info("New version available (" + UniversalUtils.getLatestVersion().orElse("unknow")
-					+ "). Download it here: https://www.spigotmc.org/resources/48399/");
-		}
-		
 		NegativityAccountStorage.setDefaultStorage("file");
 	}
 	
@@ -122,43 +113,9 @@ public class SpigotNegativity extends JavaPlugin {
 
 	private void loadCommand() {
 		CommandsListeners command = new CommandsListeners();
-		ConfigurationSection commandSection = getConfig().getConfigurationSection("commands");
 		PluginCommand negativity = getCommand("negativity");
 		negativity.setExecutor(command);
 		negativity.setTabCompleter(command);
-
-		PluginCommand reportCmd = getCommand("nreport");
-		if (!commandSection.getBoolean("report", true))
-			unRegisterBukkitCommand(reportCmd);
-		else {
-			reportCmd.setExecutor(command);
-			reportCmd.setTabCompleter(command);
-		}
-
-		PluginCommand kickCmd = getCommand("nkick");
-		if (!commandSection.getBoolean("kick", true))
-			unRegisterBukkitCommand(kickCmd);
-		else {
-			kickCmd.setAliases(Arrays.asList("negkick"));
-			kickCmd.setExecutor(command);
-			kickCmd.setTabCompleter(command);
-		}
-
-		PluginCommand langCmd = getCommand("nlang");
-		if (!commandSection.getBoolean("lang", true))
-			unRegisterBukkitCommand(langCmd);
-		else {
-			langCmd.setExecutor(command);
-			langCmd.setTabCompleter(command);
-		}
-
-		PluginCommand modCmd = getCommand("nmod");
-		if (!commandSection.getBoolean("mod", true))
-			unRegisterBukkitCommand(modCmd);
-		else
-			modCmd.setExecutor(command);
-		
-		
 	}
 
 	@Override
@@ -176,16 +133,6 @@ public class SpigotNegativity extends JavaPlugin {
 
 	public static SpigotNegativity getInstance() {
 		return INSTANCE;
-	}
-
-	public static void sendReportMessage(Player reporter, String reason, String reported) {
-		try {
-			ReportMessage reportMessage = new ReportMessage(reported, reason, reporter.getName());
-			reporter.sendPluginMessage(SpigotNegativity.getInstance(), NegativityMessagesManager.CHANNEL_ID, NegativityMessagesManager.writeMessage(reportMessage));
-		} catch (IOException e) {
-			SpigotNegativity.getInstance().getLogger().severe("Could not send report message to the proxy.");
-			e.printStackTrace();
-		}
 	}
 
 	public static void sendProxyPing(Player player) {

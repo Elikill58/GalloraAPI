@@ -22,9 +22,7 @@ public class NegativityMessagesManager {
 	static {
 		Map<Byte, Supplier<NegativityMessage>> messages = new HashMap<>();
 		messages.put(ProxyPingMessage.MESSAGE_ID, ProxyPingMessage::new);
-		messages.put(ReportMessage.MESSAGE_ID, ReportMessage::new);
 		messages.put(ClientModsListMessage.MESSAGE_ID, ClientModsListMessage::new);
-		messages.put(ProxyRevokeBanMessage.MESSAGE_ID, ProxyRevokeBanMessage::new);
 		messages.put(AccountUpdateMessage.MESSAGE_ID, AccountUpdateMessage::new);
 		MESSAGES_BY_ID = Collections.unmodifiableMap(messages);
 	}

@@ -118,7 +118,7 @@ public class SpongeAdapter extends Adapter {
 	
 	@Override
 	public String getPluginVersion() {
-		return plugin.getContainer().getVersion().orElse(UniversalUtils.NEGATIVITY_VERSION);
+		return plugin.getContainer().getVersion().orElse(UniversalUtils.GALLORA_VERSION);
 	}
 
 	@Override

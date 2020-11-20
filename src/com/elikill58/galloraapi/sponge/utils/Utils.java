@@ -18,12 +18,13 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import com.elikill58.galloraapi.api.GalloraPlayer;
-import com.elikill58.galloraapi.sponge.Messages;
+import com.elikill58.galloraapi.universal.Messages;
 import com.elikill58.galloraapi.universal.utils.UniversalUtils;
 import com.flowpowered.math.vector.Vector3d;
 
@@ -105,8 +106,8 @@ public class Utils {
 		ItemStack indicator = ItemStack.of(ItemTypes.WOOL);
 		boolean usesMcLeaks = nPlayer.getAccount().isMcLeaks();
 		indicator.offer(Keys.DYE_COLOR, usesMcLeaks ? DyeColors.RED : DyeColors.LIME);
-		indicator.offer(Keys.DISPLAY_NAME, Messages.getMessage(player, "inventory.main.mcleaks_indicator." + (usesMcLeaks ? "positive" : "negative")));
-		indicator.offer(Keys.ITEM_LORE, Collections.singletonList(Messages.getMessage(player, "inventory.main.mcleaks_indicator.description")));
+		indicator.offer(Keys.DISPLAY_NAME, Text.builder(Messages.getMessage(nPlayer.getAccount(), "inventory.main.mcleaks_indicator." + (usesMcLeaks ? "positive" : "negative"))).build());
+		indicator.offer(Keys.ITEM_LORE, Collections.singletonList(Text.builder(Messages.getMessage(nPlayer.getAccount(), "inventory.main.mcleaks_indicator.description")).build()));
 		return indicator;
 	}
 }

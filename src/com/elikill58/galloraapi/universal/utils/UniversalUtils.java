@@ -51,7 +51,8 @@ import com.elikill58.galloraapi.universal.Adapter;
 
 public class UniversalUtils {
 
-	public static final String NEGATIVITY_VERSION = "2.0";
+	public static final String PLUGIN_NAME = "gallora";
+	public static final String GALLORA_VERSION = "1.0";
 	public static final DateTimeFormatter GENERIC_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	public static boolean HAVE_INTERNET = true, DEBUG = false;
 
@@ -170,17 +171,6 @@ public class UniversalUtils {
 			return false;
 		}
 	}
-
-	public static boolean isLatestVersion(String version) {
-		if (version == null)
-			return false;
-
-		Optional<String> optVer = getLatestVersion();
-		if (optVer.isPresent())
-			return version.equalsIgnoreCase(optVer.get());
-		else
-			return true;
-	}
 	
 	public static Optional<String> getContentFromURL(String url){
 		return getContentFromURL(url, "");
@@ -223,10 +213,6 @@ public class UniversalUtils {
         	e.printStackTrace();
 		}
 		return Optional.empty();
-	}
-
-	public static Optional<String> getLatestVersion() {
-		return getContentFromURL("https://api.spigotmc.org/legacy/update.php?resource=48399");
 	}
 
 	public static CompletableFuture<@Nullable String> requestMcleaksData(String uuid) {
@@ -310,10 +296,10 @@ public class UniversalUtils {
 		if(!configFile.exists()) {
 			configFile.getParentFile().mkdirs();
 			try {
-				URI migrationsDirUri = UniversalUtils.class.getResource("/assets/negativity").toURI();
+				URI migrationsDirUri = UniversalUtils.class.getResource("/assets/" + PLUGIN_NAME).toURI();
 				if (migrationsDirUri.getScheme().equals("jar")) {
 					try (FileSystem jarFs = FileSystems.newFileSystem(migrationsDirUri, Collections.emptyMap())) {
-						Path cheatPath = jarFs.getPath("/assets/negativity", configName);
+						Path cheatPath = jarFs.getPath("/assets/" + PLUGIN_NAME, configName);
 						if(Files.isRegularFile(cheatPath)) {
 							Files.copy(cheatPath, Paths.get(configFile.toURI()));
 						} else {
