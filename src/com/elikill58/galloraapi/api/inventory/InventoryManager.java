@@ -1,6 +1,7 @@
 package com.elikill58.galloraapi.api.inventory;
 
 import java.util.Optional;
+import java.util.ServiceLoader;
 
 import com.elikill58.galloraapi.api.entity.Player;
 import com.elikill58.galloraapi.api.events.EventListener;
@@ -13,7 +14,7 @@ import com.elikill58.galloraapi.api.item.Materials;
 public class InventoryManager implements Listeners {
 	
 	public InventoryManager() {
-		AbstractInventory.INVENTORIES.forEach(AbstractInventory::load);
+		ServiceLoader.load(AbstractInventory.class).forEach(AbstractInventory::load);
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })

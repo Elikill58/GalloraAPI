@@ -10,7 +10,7 @@ import com.elikill58.galloraapi.api.item.Material;
 
 public abstract class AbstractInventory<T extends NegativityHolder> {
 
-	public static final List<AbstractInventory<?>> INVENTORIES = new ArrayList<>();
+	public static final List<AbstractInventory<? extends NegativityHolder>> INVENTORIES = new ArrayList<>();
 	
 	private final NegativityInventory type;
 	private final Class<T> holderExample;
@@ -23,7 +23,8 @@ public abstract class AbstractInventory<T extends NegativityHolder> {
 	
 	/**
 	 * The Negativity inventory type
-	 * @return
+	 * 
+	 * @return the type of the inventory
 	 */
 	public NegativityInventory getType() {
 		return type;

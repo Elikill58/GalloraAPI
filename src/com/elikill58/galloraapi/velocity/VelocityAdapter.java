@@ -26,9 +26,11 @@ import com.elikill58.galloraapi.universal.pluginMessages.GalloraMessagesManager;
 import com.elikill58.galloraapi.universal.translation.NegativityTranslationProviderFactory;
 import com.elikill58.galloraapi.universal.translation.TranslationProviderFactory;
 import com.elikill58.galloraapi.universal.utils.UniversalUtils;
+import com.elikill58.galloraapi.velocity.impl.entity.VelocityOfflinePlayer;
 import com.elikill58.galloraapi.velocity.impl.entity.VelocityPlayer;
 import com.elikill58.galloraapi.velocity.impl.plugin.VelocityExternalPlugin;
 import com.google.gson.Gson;
+import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.messages.LegacyChannelIdentifier;
 
 public class VelocityAdapter extends ProxyAdapter {
@@ -64,6 +66,10 @@ public class VelocityAdapter extends ProxyAdapter {
 
     public final InputStream getResourceAsStream(final String name) {
         return pl.getClass().getClassLoader().getResourceAsStream(name);
+    }
+    
+    public ProxyServer getServer() {
+    	return pl.getServer();
     }
 	
 	@Override
@@ -215,8 +221,7 @@ public class VelocityAdapter extends ProxyAdapter {
 		Player tempP = getPlayer(uuid);
 		if(tempP != null)
 			return tempP;
-		// TODO add support for offline bungee players
-		return null;
+		return new VelocityOfflinePlayer(uuid);
 	}
 
 	@Override

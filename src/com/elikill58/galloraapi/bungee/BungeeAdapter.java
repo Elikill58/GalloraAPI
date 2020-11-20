@@ -16,6 +16,7 @@ import com.elikill58.galloraapi.api.entity.OfflinePlayer;
 import com.elikill58.galloraapi.api.entity.Player;
 import com.elikill58.galloraapi.api.plugin.ExternalPlugin;
 import com.elikill58.galloraapi.api.yaml.config.Configuration;
+import com.elikill58.galloraapi.bungee.impl.entity.BungeeOfflinePlayer;
 import com.elikill58.galloraapi.bungee.impl.entity.BungeePlayer;
 import com.elikill58.galloraapi.bungee.impl.plugin.BungeeExternalPlugin;
 import com.elikill58.galloraapi.universal.Platform;
@@ -204,8 +205,7 @@ public class BungeeAdapter extends ProxyAdapter {
 		Player tempP = getPlayer(uuid);
 		if(tempP != null)
 			return tempP;
-		// TODO add support for offline bungee players
-		return null;
+		return new BungeeOfflinePlayer(uuid);
 	}
 	
 	@Override

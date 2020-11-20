@@ -45,6 +45,9 @@ import javax.net.ssl.X509TrustManager;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import com.elikill58.galloraapi.api.json.JSONArray;
+import com.elikill58.galloraapi.api.json.JSONObject;
+import com.elikill58.galloraapi.api.json.parser.JSONParser;
 import com.elikill58.galloraapi.api.yaml.config.Configuration;
 import com.elikill58.galloraapi.api.yaml.config.YamlConfiguration;
 import com.elikill58.galloraapi.universal.Adapter;
@@ -169,6 +172,16 @@ public class UniversalUtils {
 			return true;
 		} catch (IllegalArgumentException e) {
 			return false;
+		}
+	}
+	
+	public static String getPlayerName(UUID uuid) {
+		try {
+			String mojangApi = getContentFromURL("https://api.mojang.com/user/profiles/" + uuid.toString().replaceAll("-", "") + "/names").orElse(null);
+			JSONArray array = (JSONArray) new JSONParser().parse(mojangApi);
+			return ((JSONObject) array.get(0)).get("name").toString();
+		} catch (Exception e) {
+			return null;
 		}
 	}
 	
