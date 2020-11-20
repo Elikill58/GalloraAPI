@@ -10,7 +10,7 @@ import org.spongepowered.api.item.ItemType;
 
 import com.elikill58.galloraapi.api.item.ItemRegistrar;
 import com.elikill58.galloraapi.api.item.Material;
-import com.elikill58.galloraapi.sponge.SpongeNegativity;
+import com.elikill58.galloraapi.sponge.SpongeAdapter;
 
 public class SpongeItemRegistrar extends ItemRegistrar {
 
@@ -32,7 +32,7 @@ public class SpongeItemRegistrar extends ItemRegistrar {
 			}
 			StringJoiner sj = new StringJoiner(", ", " : ", "");
 			for(String tempAlias : alias) sj.add(tempAlias + " (" + parse(tempAlias) + ")");
-			SpongeNegativity.getInstance().getLogger().info("[SpongeItemRegistrar] Cannot find material " + id + sj.toString());
+			SpongeAdapter.getAdapter().getLogger().info("[SpongeItemRegistrar] Cannot find material " + id + sj.toString());
 			return null;
 		});
 	}

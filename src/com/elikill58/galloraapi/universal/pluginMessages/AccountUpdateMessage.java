@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import com.elikill58.galloraapi.universal.account.NegativityAccount;
 
-public class AccountUpdateMessage implements NegativityMessage {
+public class AccountUpdateMessage implements GalloraMessage {
 
 	public static final byte MESSAGE_ID = 6;
 

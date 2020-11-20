@@ -22,7 +22,7 @@ import com.elikill58.galloraapi.api.location.Vector;
 import com.elikill58.galloraapi.api.location.World;
 import com.elikill58.galloraapi.api.potion.PotionEffect;
 import com.elikill58.galloraapi.api.potion.PotionEffectType;
-import com.elikill58.galloraapi.spigot.SpigotNegativity;
+import com.elikill58.galloraapi.spigot.SpigotAdapter;
 import com.elikill58.galloraapi.spigot.impl.inventory.SpigotInventory;
 import com.elikill58.galloraapi.spigot.impl.inventory.SpigotPlayerInventory;
 import com.elikill58.galloraapi.spigot.impl.item.SpigotItemStack;
@@ -75,7 +75,7 @@ public class SpigotPlayer extends Player {
 	
 	@Override
 	public boolean hasLineOfSight(Entity entity) {
-		return SpigotNegativity.isCraftBukkit ? true : p.hasLineOfSight((org.bukkit.entity.Entity) entity.getDefault());
+		return SpigotAdapter.isCraftBukkit ? true : p.hasLineOfSight((org.bukkit.entity.Entity) entity.getDefault());
 	}
 
 	@Override
@@ -105,7 +105,7 @@ public class SpigotPlayer extends Player {
 
 	@Override
 	public void damage(double amount) {
-		Bukkit.getScheduler().runTask(SpigotNegativity.getInstance(), () -> p.damage(amount));
+		Bukkit.getScheduler().runTask(SpigotAdapter.getPlugin(), () -> p.damage(amount));
 	}
 
 	@Override
@@ -182,7 +182,7 @@ public class SpigotPlayer extends Player {
 
 	@Override
 	public void sendPluginMessage(String channelId, byte[] writeMessage) {
-		p.sendPluginMessage(SpigotNegativity.getInstance(), channelId, writeMessage);
+		p.sendPluginMessage(SpigotAdapter.getPlugin(), channelId, writeMessage);
 	}
 
 	@Override
@@ -265,7 +265,7 @@ public class SpigotPlayer extends Player {
 
 	@Override
 	public void teleport(Location loc) {
-		Bukkit.getScheduler().runTask(SpigotNegativity.getInstance(), () -> p.teleport((org.bukkit.Location) loc.getDefault()));
+		Bukkit.getScheduler().runTask(SpigotAdapter.getPlugin(), () -> p.teleport((org.bukkit.Location) loc.getDefault()));
 	}
 
 	@Override
@@ -286,7 +286,7 @@ public class SpigotPlayer extends Player {
 	@Override
 	public List<Entity> getNearbyEntities(double x, double y, double z) {
 		List<Entity> list = new ArrayList<>();
-		Bukkit.getScheduler().runTask(SpigotNegativity.getInstance(), () -> p.getNearbyEntities(x, y, z).forEach((entity) -> list.add(SpigotEntityManager.getEntity(entity))));
+		Bukkit.getScheduler().runTask(SpigotAdapter.getPlugin(), () -> p.getNearbyEntities(x, y, z).forEach((entity) -> list.add(SpigotEntityManager.getEntity(entity))));
 		return list;
 	}
 
@@ -340,17 +340,17 @@ public class SpigotPlayer extends Player {
 
 	@Override
 	public void openInventory(Inventory inv) {
-		Bukkit.getScheduler().runTask(SpigotNegativity.getInstance(), () -> p.openInventory((org.bukkit.inventory.Inventory) inv.getDefault()));
+		Bukkit.getScheduler().runTask(SpigotAdapter.getPlugin(), () -> p.openInventory((org.bukkit.inventory.Inventory) inv.getDefault()));
 	}
 
 	@Override
 	public void closeInventory() {
-		Bukkit.getScheduler().runTask(SpigotNegativity.getInstance(), () -> p.closeInventory());
+		Bukkit.getScheduler().runTask(SpigotAdapter.getPlugin(), () -> p.closeInventory());
 	}
 
 	@Override
 	public void updateInventory() {
-		Bukkit.getScheduler().runTask(SpigotNegativity.getInstance(), () -> p.updateInventory());
+		Bukkit.getScheduler().runTask(SpigotAdapter.getPlugin(), () -> p.updateInventory());
 	}
 
 	@Override

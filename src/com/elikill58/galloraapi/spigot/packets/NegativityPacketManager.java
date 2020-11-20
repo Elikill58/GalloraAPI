@@ -2,12 +2,12 @@ package com.elikill58.galloraapi.spigot.packets;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import com.elikill58.galloraapi.api.GalloraPlayer;
 import com.elikill58.galloraapi.api.entity.Player;
 import com.elikill58.galloraapi.api.packets.AbstractPacket;
 import com.elikill58.galloraapi.api.packets.PacketHandler;
-import com.elikill58.galloraapi.spigot.SpigotNegativity;
 import com.elikill58.galloraapi.spigot.impl.packet.SpigotPacketManager;
 import com.elikill58.galloraapi.spigot.packets.custom.CustomPacketManager;
 import com.elikill58.galloraapi.spigot.packets.protocollib.ProtocollibPacketManager;
@@ -16,9 +16,9 @@ import com.elikill58.galloraapi.universal.PacketType;
 public class NegativityPacketManager {
 
 	private SpigotPacketManager spigotPacketManager;
-	private SpigotNegativity plugin;
+	private JavaPlugin plugin;
 	
-	public NegativityPacketManager(SpigotNegativity pl) {
+	public NegativityPacketManager(JavaPlugin pl) {
 		this.plugin = pl;
 		Plugin protocolLibPlugin = Bukkit.getPluginManager().getPlugin("ProtocolLib");
 		if (protocolLibPlugin != null) {

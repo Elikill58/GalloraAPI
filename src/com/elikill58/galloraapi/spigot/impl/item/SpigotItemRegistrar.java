@@ -6,7 +6,7 @@ import java.util.StringJoiner;
 import org.bukkit.Material;
 
 import com.elikill58.galloraapi.api.item.ItemRegistrar;
-import com.elikill58.galloraapi.spigot.SpigotNegativity;
+import com.elikill58.galloraapi.spigot.SpigotAdapter;
 
 public class SpigotItemRegistrar extends ItemRegistrar {
 
@@ -36,7 +36,7 @@ public class SpigotItemRegistrar extends ItemRegistrar {
 		}*/
 		StringJoiner sj = new StringJoiner(", ", " : ", "");
 		for(String tempAlias : alias) sj.add(tempAlias);
-		SpigotNegativity.getInstance().getLogger().info("[SpigotItemRegistrar] Cannot find material " + id + sj.toString());
+		SpigotAdapter.getPlugin().getLogger().info("[SpigotItemRegistrar] Cannot find material " + id + sj.toString());
 		return null;
 	}
 	

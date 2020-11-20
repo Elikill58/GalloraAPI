@@ -22,15 +22,23 @@ import com.elikill58.galloraapi.universal.account.NegativityAccountManager;
 import com.elikill58.galloraapi.universal.account.SimpleAccountManager;
 import com.elikill58.galloraapi.universal.logger.LoggerAdapter;
 import com.elikill58.galloraapi.universal.logger.Slf4jLoggerAdapter;
+import com.elikill58.galloraapi.universal.pluginMessages.GalloraMessagesManager;
 import com.elikill58.galloraapi.universal.translation.NegativityTranslationProviderFactory;
 import com.elikill58.galloraapi.universal.translation.TranslationProviderFactory;
 import com.elikill58.galloraapi.universal.utils.UniversalUtils;
 import com.elikill58.galloraapi.velocity.impl.entity.VelocityPlayer;
 import com.elikill58.galloraapi.velocity.impl.plugin.VelocityExternalPlugin;
 import com.google.gson.Gson;
+import com.velocitypowered.api.proxy.messages.LegacyChannelIdentifier;
 
 public class VelocityAdapter extends ProxyAdapter {
 
+	public static VelocityAdapter getAdapter() {
+		return (VelocityAdapter) adapter;
+	}
+
+	public static final LegacyChannelIdentifier NEGATIVITY_CHANNEL_ID = new LegacyChannelIdentifier(GalloraMessagesManager.CHANNEL_ID);
+	
 	private Configuration config;
 	private VelocityNegativity pl;
 	private final NegativityAccountManager accountManager = new SimpleAccountManager.Proxy();
@@ -49,7 +57,14 @@ public class VelocityAdapter extends ProxyAdapter {
 			logger.error("----- GalloraAPI -----");
 			logger.error("Please, upgrade to (at least) Velocity 1.1.0.");
 		}
+
+	    pl.getServer().getEventManager().register(this, new VelocityListeners());
+	    pl.getServer().getChannelRegistrar().register(NEGATIVITY_CHANNEL_ID);
 	}
+
+    public final InputStream getResourceAsStream(final String name) {
+        return pl.getClass().getClassLoader().getResourceAsStream(name);
+    }
 	
 	@Override
 	public Platform getPlatformID() {
@@ -75,7 +90,7 @@ public class VelocityAdapter extends ProxyAdapter {
 	@Nullable
 	@Override
 	public InputStream openBundledFile(String name) {
-		return pl.getResourceAsStream("assets/negativity/" + name);
+		return getResourceAsStream("assets/" + UniversalUtils.PLUGIN_NAME + "/" + name);
 	}
 
 	@Override
@@ -189,11 +204,18 @@ public class VelocityAdapter extends ProxyAdapter {
 
 	@Override
 	public OfflinePlayer getOfflinePlayer(String name) {
+		Player tempP = getPlayer(name);
+		if(tempP != null)
+			return tempP;
 		return null;
 	}
 	
 	@Override
 	public OfflinePlayer getOfflinePlayer(UUID uuid) {
+		Player tempP = getPlayer(uuid);
+		if(tempP != null)
+			return tempP;
+		// TODO add support for offline bungee players
 		return null;
 	}
 
@@ -210,5 +232,10 @@ public class VelocityAdapter extends ProxyAdapter {
 	@Override
 	public void runSync(Runnable call) {
 		pl.getServer().getScheduler().buildTask(pl, call);
+	}
+	
+	@Override
+	public void disable() {
+		
 	}
 }

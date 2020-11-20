@@ -6,7 +6,8 @@ import com.elikill58.galloraapi.api.GalloraPlayer;
 import com.elikill58.galloraapi.api.entity.Player;
 import com.elikill58.galloraapi.api.packets.AbstractPacket;
 import com.elikill58.galloraapi.api.packets.PacketHandler;
-import com.elikill58.galloraapi.sponge.SpongeNegativity;
+import com.elikill58.galloraapi.sponge.SpongeAdapter;
+import com.elikill58.galloraapi.sponge.SpongePlugin;
 import com.elikill58.galloraapi.sponge.impl.packet.SpongePacketManager;
 import com.elikill58.galloraapi.sponge.packets.packetgate.PacketGateManager;
 
@@ -14,11 +15,11 @@ public class NegativityPacketManager {
 
 	private SpongePacketManager spongePacketManager;
 	
-	public NegativityPacketManager(SpongeNegativity pl) {
+	public NegativityPacketManager(SpongePlugin pl) {
 
 		try {
 			Class.forName("eu.crushedpixel.sponge.packetgate.api.registry.PacketGate");
-			SpongeNegativity.hasPacketGate = true;
+			SpongeAdapter.hasPacketGate = true;
 			spongePacketManager = new PacketGateManager();
 		} catch (ClassNotFoundException e1) {
 			Logger log = pl.getLogger();

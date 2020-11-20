@@ -29,7 +29,7 @@ import com.elikill58.galloraapi.api.events.player.PlayerLeaveEvent;
 import com.elikill58.galloraapi.api.events.player.PlayerMoveEvent;
 import com.elikill58.galloraapi.api.events.player.PlayerRegainHealthEvent;
 import com.elikill58.galloraapi.api.events.player.PlayerTeleportEvent;
-import com.elikill58.galloraapi.spigot.SpigotNegativity;
+import com.elikill58.galloraapi.spigot.SpigotAdapter;
 import com.elikill58.galloraapi.spigot.impl.entity.SpigotEntityManager;
 import com.elikill58.galloraapi.spigot.impl.entity.SpigotPlayer;
 import com.elikill58.galloraapi.spigot.impl.item.SpigotItemStack;
@@ -45,7 +45,7 @@ public class PlayersListeners implements Listener {
 		PlayerLeaveEvent event = new PlayerLeaveEvent(np.getPlayer(), np, e.getQuitMessage());
 		EventManager.callEvent(event);
 		e.setQuitMessage(event.getQuitMessage());
-		Bukkit.getScheduler().runTaskLater(SpigotNegativity.getInstance(), () -> GalloraPlayer.removeFromCache(p.getUniqueId()), 2);
+		Bukkit.getScheduler().runTaskLater(SpigotAdapter.getPlugin(), () -> GalloraPlayer.removeFromCache(p.getUniqueId()), 2);
 	}
 	
 	@EventHandler
@@ -55,7 +55,7 @@ public class PlayersListeners implements Listener {
 		if(np.isFreeze && !p.getLocation().clone().subtract(0, 1, 0).getBlock().getType().equals(Material.AIR))
 			e.setCancelled(true);
 		PlayerMoveEvent event = new PlayerMoveEvent(SpigotEntityManager.getPlayer(p), new SpigotLocation(e.getFrom()), new SpigotLocation(e.getTo()));
-		Bukkit.getScheduler().runTaskAsynchronously(SpigotNegativity.getInstance(), () -> EventManager.callEvent(event));
+		Bukkit.getScheduler().runTaskAsynchronously(SpigotAdapter.getPlugin(), () -> EventManager.callEvent(event));
 		if(event.hasToSet()) {
 			e.setTo((Location) event.getTo().getDefault());
 			e.setFrom((Location) event.getFrom().getDefault());
@@ -70,7 +70,7 @@ public class PlayersListeners implements Listener {
 	
 	@EventHandler
 	public void onChat(AsyncPlayerChatEvent e) {
-		Bukkit.getScheduler().runTask(SpigotNegativity.getInstance(), () -> {
+		Bukkit.getScheduler().runTask(SpigotAdapter.getPlugin(), () -> {
 			PlayerChatEvent event = new PlayerChatEvent(SpigotEntityManager.getPlayer(e.getPlayer()), e.getMessage(), e.getFormat());
 			EventManager.callEvent(event);
 			if(event.isCancelled())
@@ -135,7 +135,7 @@ public class PlayersListeners implements Listener {
 		
 		if(!ProxyCompanionManager.searchedCompanion) {
 			ProxyCompanionManager.searchedCompanion = true;
-			Bukkit.getScheduler().runTaskLater(SpigotNegativity.getInstance(), () -> SpigotNegativity.sendProxyPing(p), 20);
+			Bukkit.getScheduler().runTaskLater(SpigotAdapter.getPlugin(), () -> SpigotAdapter.getAdapter().sendProxyPing(p), 20);
 		}
 	}
 }

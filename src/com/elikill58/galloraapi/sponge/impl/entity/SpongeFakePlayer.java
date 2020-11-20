@@ -16,7 +16,7 @@ import org.spongepowered.api.world.World;
 import com.elikill58.galloraapi.api.entity.FakePlayer;
 import com.elikill58.galloraapi.api.location.Location;
 import com.elikill58.galloraapi.api.location.Vector;
-import com.elikill58.galloraapi.sponge.SpongeNegativity;
+import com.elikill58.galloraapi.sponge.SpongeAdapter;
 import com.elikill58.galloraapi.sponge.impl.location.SpongeLocation;
 import com.elikill58.galloraapi.sponge.impl.location.SpongeWorld;
 import com.flowpowered.math.vector.Vector3d;
@@ -46,7 +46,7 @@ public class SpongeFakePlayer extends FakePlayer {
 		p.getWorld().spawnEntity(fakePlayer);
 		Task.builder().execute(() -> {
 			hide(pl);
-		}).delayTicks(20).submit(SpongeNegativity.getInstance());
+		}).delayTicks(20).submit(SpongeAdapter.getPlugin());
 	}
 
 	public Location getLocation() {

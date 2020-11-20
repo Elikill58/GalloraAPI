@@ -4,7 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class ProxyPingMessage implements NegativityMessage {
+public class ProxyPingMessage implements GalloraMessage {
 
 	public static final byte MESSAGE_ID = 1;
 

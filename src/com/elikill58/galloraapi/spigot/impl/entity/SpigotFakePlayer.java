@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 import com.elikill58.galloraapi.api.entity.FakePlayer;
 import com.elikill58.galloraapi.api.location.Location;
 import com.elikill58.galloraapi.api.location.Vector;
-import com.elikill58.galloraapi.spigot.SpigotNegativity;
+import com.elikill58.galloraapi.spigot.SpigotAdapter;
 import com.elikill58.galloraapi.spigot.utils.PacketUtils;
 import com.elikill58.galloraapi.universal.Version;
 import com.elikill58.galloraapi.universal.utils.ReflectionUtils;
@@ -101,7 +101,7 @@ public class SpigotFakePlayer extends FakePlayer {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	    Bukkit.getScheduler().runTaskLater(SpigotNegativity.getInstance(), new Runnable() {
+	    Bukkit.getScheduler().runTaskLater(SpigotAdapter.getPlugin(), new Runnable() {
 			@Override
 			public void run() {
 				try {
@@ -116,7 +116,7 @@ public class SpigotFakePlayer extends FakePlayer {
 				}
 			}
 		}, 3);
-	    Bukkit.getScheduler().runTaskLater(SpigotNegativity.getInstance(), new Runnable() {
+	    Bukkit.getScheduler().runTaskLater(SpigotAdapter.getPlugin(), new Runnable() {
 			@Override
 			public void run() {
 				hide(pl);

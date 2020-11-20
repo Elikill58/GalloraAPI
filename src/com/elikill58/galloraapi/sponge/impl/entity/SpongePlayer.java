@@ -35,7 +35,7 @@ import com.elikill58.galloraapi.api.location.Vector;
 import com.elikill58.galloraapi.api.location.World;
 import com.elikill58.galloraapi.api.potion.PotionEffect;
 import com.elikill58.galloraapi.api.potion.PotionEffectType;
-import com.elikill58.galloraapi.sponge.SpongeNegativity;
+import com.elikill58.galloraapi.sponge.SpongeAdapter;
 import com.elikill58.galloraapi.sponge.impl.SpongePotionEffectType;
 import com.elikill58.galloraapi.sponge.impl.inventory.SpongeInventory;
 import com.elikill58.galloraapi.sponge.impl.inventory.SpongePlayerInventory;
@@ -208,7 +208,7 @@ public class SpongePlayer extends Player {
 
 	@Override
 	public void sendPluginMessage(String channelId, byte[] writeMessage) {
-		(channelId.equalsIgnoreCase("fml") ? SpongeNegativity.fmlChannel : SpongeNegativity.channel).sendTo(p, (chan) -> chan.writeByteArray(writeMessage));
+		(channelId.equalsIgnoreCase("fml") ? SpongeAdapter.fmlChannel : SpongeAdapter.channel).sendTo(p, (chan) -> chan.writeByteArray(writeMessage));
 	}
 
 	@Override
@@ -369,7 +369,7 @@ public class SpongePlayer extends Player {
 
 	@Override
 	public void closeInventory() {
-		Task.builder().execute(() -> p.closeInventory()).submit(SpongeNegativity.getInstance());
+		Task.builder().execute(() -> p.closeInventory()).submit(SpongeAdapter.getPlugin());
 	}
 
 	@Override

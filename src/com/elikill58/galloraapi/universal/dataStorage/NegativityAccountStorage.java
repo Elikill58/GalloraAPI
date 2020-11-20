@@ -55,6 +55,8 @@ public abstract class NegativityAccountStorage {
 		Adapter adapter = Adapter.getAdapter();
 		storageId = adapter.getConfig().getString("accounts.storage.id");
 		
+		setDefaultStorage("file");
+		
 		NegativityAccountStorage.register("file", new FileNegativityAccountStorage(new File(adapter.getDataFolder(), "user")));
 		if (Database.hasCustom) {
 			NegativityAccountStorage.register("database", new DatabaseNegativityAccountStorage());

@@ -24,6 +24,7 @@ import com.elikill58.galloraapi.universal.account.NegativityAccountManager;
 import com.elikill58.galloraapi.universal.account.SimpleAccountManager;
 import com.elikill58.galloraapi.universal.logger.JavaLoggerAdapter;
 import com.elikill58.galloraapi.universal.logger.LoggerAdapter;
+import com.elikill58.galloraapi.universal.pluginMessages.GalloraMessagesManager;
 import com.elikill58.galloraapi.universal.translation.NegativityTranslationProviderFactory;
 import com.elikill58.galloraapi.universal.translation.TranslationProviderFactory;
 import com.elikill58.galloraapi.universal.utils.UniversalUtils;
@@ -35,6 +36,10 @@ import net.md_5.bungee.api.plugin.Plugin;
 
 public class BungeeAdapter extends ProxyAdapter {
 
+	public static BungeeAdapter getAdapter() {
+		return (BungeeAdapter) adapter;
+	}
+
 	private final Configuration config;
 	private final Plugin pl;
 	private final NegativityAccountManager accountManager = new SimpleAccountManager.Proxy();
@@ -43,9 +48,14 @@ public class BungeeAdapter extends ProxyAdapter {
 
 	public BungeeAdapter(Plugin pl) {
 		this.pl = pl;
-		this.config = UniversalUtils.loadConfig(new File(pl.getDataFolder(), "config.yml"), "config_bungee.yml");
-		this.translationProviderFactory = new NegativityTranslationProviderFactory(pl.getDataFolder().toPath().resolve("lang"), "NegativityProxy", "CheatHover");
+		File dataFolder = pl.getDataFolder();
+		this.config = UniversalUtils.loadConfig(new File(dataFolder, "config.yml"), "config.yml");
+		this.translationProviderFactory = new NegativityTranslationProviderFactory(dataFolder.toPath().resolve("lang"));
 		this.logger = new JavaLoggerAdapter(pl.getLogger());
+		
+		ProxyServer proxy = this.pl.getProxy();
+		proxy.getPluginManager().registerListener(pl, new BungeeListeners());
+		proxy.registerChannel(GalloraMessagesManager.CHANNEL_ID);
 	}
 	
 	@Override
@@ -72,7 +82,7 @@ public class BungeeAdapter extends ProxyAdapter {
 	@Nullable
 	@Override
 	public InputStream openBundledFile(String name) {
-		return pl.getResourceAsStream("assets/negativity/" + name);
+		return pl.getResourceAsStream("assets/" + UniversalUtils.PLUGIN_NAME + "/" + name);
 	}
 
 	@Override
@@ -183,11 +193,18 @@ public class BungeeAdapter extends ProxyAdapter {
 
 	@Override
 	public OfflinePlayer getOfflinePlayer(String name) {
+		Player tempP = getPlayer(name);
+		if(tempP != null)
+			return tempP;
 		return null;
 	}
 	
 	@Override
 	public OfflinePlayer getOfflinePlayer(UUID uuid) {
+		Player tempP = getPlayer(uuid);
+		if(tempP != null)
+			return tempP;
+		// TODO add support for offline bungee players
 		return null;
 	}
 	
@@ -204,5 +221,10 @@ public class BungeeAdapter extends ProxyAdapter {
 	@Override
 	public void runSync(Runnable call) {
 		pl.getProxy().getScheduler().schedule(pl, call, 0, TimeUnit.MILLISECONDS);
+	}
+	
+	@Override
+	public void disable() {
+	
 	}
 }

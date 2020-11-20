@@ -11,7 +11,7 @@ import com.elikill58.galloraapi.api.events.player.PlayerLeaveEvent;
 import com.elikill58.galloraapi.bungee.impl.entity.BungeePlayer;
 import com.elikill58.galloraapi.universal.Adapter;
 import com.elikill58.galloraapi.universal.pluginMessages.ClientModsListMessage;
-import com.elikill58.galloraapi.universal.pluginMessages.NegativityMessagesManager;
+import com.elikill58.galloraapi.universal.pluginMessages.GalloraMessagesManager;
 
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.connection.PendingConnection;
@@ -56,7 +56,7 @@ public class BungeeListeners implements Listener {
 	public void onServerChange(ServerConnectedEvent event) {
 		try {
 			ClientModsListMessage message = new ClientModsListMessage(event.getPlayer().getModList());
-			event.getServer().sendData(NegativityMessagesManager.CHANNEL_ID, NegativityMessagesManager.writeMessage(message));
+			event.getServer().sendData(GalloraMessagesManager.CHANNEL_ID, GalloraMessagesManager.writeMessage(message));
 		} catch (IOException e) {
 			Adapter.getAdapter().getLogger().error("Could not write ClientModsListMessage : " + e.getMessage());
 		}

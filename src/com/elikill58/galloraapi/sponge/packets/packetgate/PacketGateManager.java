@@ -7,7 +7,7 @@ import org.spongepowered.api.entity.living.player.Player;
 
 import com.elikill58.galloraapi.api.events.packets.PacketEvent.PacketSourceType;
 import com.elikill58.galloraapi.api.packets.AbstractPacket;
-import com.elikill58.galloraapi.sponge.SpongeNegativity;
+import com.elikill58.galloraapi.sponge.SpongeAdapter;
 import com.elikill58.galloraapi.sponge.impl.packet.SpongePacketManager;
 import com.elikill58.galloraapi.universal.PacketType;
 
@@ -71,7 +71,7 @@ public class PacketGateManager extends SpongePacketManager {
 						.replaceAll("\\$", "").replaceAll("Player", "");
 				packetType = PacketType.getType(newName);
 				if (packetType == null)
-					SpongeNegativity.getInstance().getLogger().error("Unknow Packet " + packetName + ", parsed as "
+					SpongeAdapter.getAdapter().getLogger().error("Unknow Packet " + packetName + ", parsed as "
 							+ newName + ". Please, report this to Elikill58.");
 			}
 			AbstractPacket packet = e.isOutgoing() ? packetManager.onPacketSent(packetType, p, e.getPacket(), e)

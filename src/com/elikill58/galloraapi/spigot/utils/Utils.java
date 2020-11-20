@@ -11,9 +11,12 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.messaging.Messenger;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import com.elikill58.galloraapi.spigot.SpigotNegativity;
+import com.elikill58.galloraapi.spigot.SpigotAdapter;
+import com.elikill58.galloraapi.spigot.listeners.ChannelListeners;
 import com.elikill58.galloraapi.universal.Version;
 import com.elikill58.galloraapi.universal.utils.UniversalUtils;
 import com.google.common.base.Preconditions;
@@ -104,7 +107,7 @@ public class Utils {
 				}
 			}
 			if(temp == null) {
-				SpigotNegativity.getInstance().getLogger().warning("Error while creating item. Cannot find item for " + s + ".");
+				SpigotAdapter.getPlugin().getLogger().warning("Error while creating item. Cannot find item for " + s + ".");
 				return null;
 			}
 			return splitted.length > 1 ? new ItemStack(temp, 1, Byte.parseByte(s.split(":")[1])) : new ItemStack(temp);
@@ -112,5 +115,12 @@ public class Utils {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public static void loadChannelInOut(JavaPlugin plugin, Messenger messenger, String channel, ChannelListeners event) {
+		if (!messenger.getOutgoingChannels().contains(channel))
+			messenger.registerOutgoingPluginChannel(plugin, channel);
+		if (!messenger.getIncomingChannels().contains(channel))
+			messenger.registerIncomingPluginChannel(plugin, channel, event);
 	}
 }

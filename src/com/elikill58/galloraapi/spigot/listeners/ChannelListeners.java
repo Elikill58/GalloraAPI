@@ -10,19 +10,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import com.elikill58.galloraapi.api.GalloraPlayer;
-import com.elikill58.galloraapi.spigot.SpigotNegativity;
+import com.elikill58.galloraapi.spigot.SpigotAdapter;
 import com.elikill58.galloraapi.spigot.impl.entity.SpigotPlayer;
 import com.elikill58.galloraapi.universal.ProxyCompanionManager;
 import com.elikill58.galloraapi.universal.pluginMessages.ClientModsListMessage;
-import com.elikill58.galloraapi.universal.pluginMessages.NegativityMessage;
-import com.elikill58.galloraapi.universal.pluginMessages.NegativityMessagesManager;
+import com.elikill58.galloraapi.universal.pluginMessages.GalloraMessage;
+import com.elikill58.galloraapi.universal.pluginMessages.GalloraMessagesManager;
 import com.elikill58.galloraapi.universal.pluginMessages.ProxyPingMessage;
 
 public class ChannelListeners implements PluginMessageListener {
 
 	@Override
 	public void onPluginMessageReceived(String channel, Player p, byte[] data) {
-		if (channel.equalsIgnoreCase(SpigotNegativity.CHANNEL_NAME_FML) && data[0] == 2) {
+		if (channel.equalsIgnoreCase(SpigotAdapter.channelFmlName) && data[0] == 2) {
 			GalloraPlayer.getPlayer(p.getUniqueId(), () -> new SpigotPlayer(p)).MODS.putAll(getModData(data));
 			return;
 		}
@@ -31,16 +31,16 @@ public class ChannelListeners implements PluginMessageListener {
 			return;
 		}
 
-		NegativityMessage message;
+		GalloraMessage message;
 		try {
-			message = NegativityMessagesManager.readMessage(data);
+			message = GalloraMessagesManager.readMessage(data);
 			if (message == null) {
 				String warnMessage = String.format("Received unknown plugin message. Channel %s send to %s.", channel, p);
-				SpigotNegativity.getInstance().getLogger().warning(warnMessage);
+				SpigotAdapter.getPlugin().getLogger().warning(warnMessage);
 				return;
 			}
 		} catch (IOException e) {
-			SpigotNegativity.getInstance().getLogger().log(Level.SEVERE, "Could not read plugin message.", e);
+			SpigotAdapter.getPlugin().getLogger().log(Level.SEVERE, "Could not read plugin message.", e);
 			return;
 		}
 
@@ -53,7 +53,7 @@ public class ChannelListeners implements PluginMessageListener {
 			np.MODS.clear();
 			np.MODS.putAll(modsMessage.getMods());
 		} else {
-			SpigotNegativity.getInstance().getLogger().warning("Received unexpected plugin message " + message.getClass().getName());
+			SpigotAdapter.getPlugin().getLogger().warning("Received unexpected plugin message " + message.getClass().getName());
 		}
 	}
 

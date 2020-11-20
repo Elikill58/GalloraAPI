@@ -14,7 +14,7 @@ import com.elikill58.galloraapi.api.events.player.PlayerConnectEvent;
 import com.elikill58.galloraapi.api.events.player.PlayerLeaveEvent;
 import com.elikill58.galloraapi.universal.Adapter;
 import com.elikill58.galloraapi.universal.pluginMessages.ClientModsListMessage;
-import com.elikill58.galloraapi.universal.pluginMessages.NegativityMessagesManager;
+import com.elikill58.galloraapi.universal.pluginMessages.GalloraMessagesManager;
 import com.elikill58.galloraapi.velocity.impl.entity.VelocityPlayer;
 import com.velocitypowered.api.event.ResultedEvent;
 import com.velocitypowered.api.event.Subscribe;
@@ -68,8 +68,8 @@ public class VelocityListeners {
 		}
 
 		try {
-			byte[] rawMessage = NegativityMessagesManager.writeMessage(new ClientModsListMessage(mods));
-			event.getServer().sendPluginMessage(VelocityNegativity.NEGATIVITY_CHANNEL_ID, rawMessage);
+			byte[] rawMessage = GalloraMessagesManager.writeMessage(new ClientModsListMessage(mods));
+			event.getServer().sendPluginMessage(VelocityAdapter.NEGATIVITY_CHANNEL_ID, rawMessage);
 		} catch (IOException e) {
 			Adapter.getAdapter().getLogger().error("Could not write ClientModsListMessage: " + e.getMessage());
 		}

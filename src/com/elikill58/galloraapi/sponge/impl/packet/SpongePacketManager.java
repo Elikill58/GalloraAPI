@@ -3,12 +3,12 @@ package com.elikill58.galloraapi.sponge.impl.packet;
 import org.spongepowered.api.scheduler.Task;
 
 import com.elikill58.galloraapi.api.events.EventManager;
+import com.elikill58.galloraapi.api.events.packets.PacketEvent.PacketSourceType;
 import com.elikill58.galloraapi.api.events.packets.PacketReceiveEvent;
 import com.elikill58.galloraapi.api.events.packets.PacketSendEvent;
-import com.elikill58.galloraapi.api.events.packets.PacketEvent.PacketSourceType;
 import com.elikill58.galloraapi.api.packets.AbstractPacket;
 import com.elikill58.galloraapi.api.packets.PacketManager;
-import com.elikill58.galloraapi.sponge.SpongeNegativity;
+import com.elikill58.galloraapi.sponge.SpongeAdapter;
 
 public abstract class SpongePacketManager extends PacketManager {
 	
@@ -18,7 +18,7 @@ public abstract class SpongePacketManager extends PacketManager {
 			PacketReceiveEvent event = new PacketReceiveEvent(source, packet, packet.getPlayer());
 			EventManager.callEvent(event);
 			handlers.forEach((handler) -> handler.onReceive(packet));
-		}).submit(SpongeNegativity.getInstance());
+		}).submit(SpongeAdapter.getPlugin());
 	}
 
 	public void notifyHandlersSent(PacketSourceType source, AbstractPacket packet) {
@@ -27,6 +27,6 @@ public abstract class SpongePacketManager extends PacketManager {
 			PacketSendEvent event = new PacketSendEvent(source, packet, packet.getPlayer());
 			EventManager.callEvent(event);
 			handlers.forEach((handler) -> handler.onSend(packet));
-		}).submit(SpongeNegativity.getInstance());
+		}).submit(SpongeAdapter.getPlugin());
 	}
 }

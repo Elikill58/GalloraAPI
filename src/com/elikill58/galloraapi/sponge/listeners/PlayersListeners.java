@@ -1,5 +1,8 @@
 package com.elikill58.galloraapi.sponge.listeners;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
@@ -13,6 +16,8 @@ import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.TextActions;
+import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -29,12 +34,13 @@ import com.elikill58.galloraapi.api.events.player.PlayerItemConsumeEvent;
 import com.elikill58.galloraapi.api.events.player.PlayerLeaveEvent;
 import com.elikill58.galloraapi.api.events.player.PlayerMoveEvent;
 import com.elikill58.galloraapi.api.events.player.PlayerTeleportEvent;
-import com.elikill58.galloraapi.sponge.SpongeNegativity;
+import com.elikill58.galloraapi.sponge.SpongeAdapter;
 import com.elikill58.galloraapi.sponge.impl.entity.SpongeEntityManager;
 import com.elikill58.galloraapi.sponge.impl.entity.SpongePlayer;
 import com.elikill58.galloraapi.sponge.impl.item.SpongeItemStack;
 import com.elikill58.galloraapi.sponge.impl.location.SpongeLocation;
 import com.elikill58.galloraapi.universal.ProxyCompanionManager;
+import com.elikill58.galloraapi.universal.permissions.Perm;
 
 public class PlayersListeners {
 	
@@ -50,13 +56,27 @@ public class PlayersListeners {
 	@Listener
 	public void onPlayerJoin(ClientConnectionEvent.Join e, @First Player p) {
 		GalloraPlayer np = GalloraPlayer.getPlayer(p.getUniqueId(), () -> new SpongePlayer(p));
+
+		if (Perm.hasPerm(np, Perm.SHOW_REPORT)) {
+			if (!SpongeAdapter.hasPacketGate) {
+				try {
+					p.sendMessage(Text.builder("[Negativity] Dependency not found. Please, download it here.")
+							.onHover(TextActions.showText(Text.of("Click here")))
+							.onClick(
+									TextActions.openUrl(new URL("https://github.com/CrushedPixel/PacketGate/releases")))
+							.color(TextColors.RED).build());
+				} catch (MalformedURLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
 		PlayerConnectEvent event = new PlayerConnectEvent(np.getPlayer(), np, e.getMessage().toPlain());
 		EventManager.callEvent(event);
 		e.setMessage(Text.of(event.getJoinMessage()));
 		
 		if(!ProxyCompanionManager.searchedCompanion) {
 			ProxyCompanionManager.searchedCompanion = true;
-			Task.builder().delayTicks(20).execute(() -> SpongeNegativity.sendProxyPing(p)).submit(SpongeNegativity.getInstance());
+			Task.builder().delayTicks(20).execute(() -> SpongeAdapter.getAdapter().sendProxyPing(p)).submit(SpongeAdapter.getPlugin());
 		}
 	}
 

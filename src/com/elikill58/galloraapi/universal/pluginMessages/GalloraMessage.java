@@ -7,7 +7,7 @@ import java.io.IOException;
 /**
  * Base of all negativity plugin messages
  */
-public interface NegativityMessage {
+public interface GalloraMessage {
 
 	/**
 	 * Get the negativity message ID

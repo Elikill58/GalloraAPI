@@ -29,7 +29,7 @@ import com.elikill58.galloraapi.universal.translation.TranslationProviderFactory
 
 public abstract class Adapter {
 
-	private static Adapter adapter = null;
+	protected static Adapter adapter = null;
 
 	public static void setAdapter(Adapter adapter) {
 		if(Adapter.adapter != null) {
@@ -44,10 +44,6 @@ public abstract class Adapter {
 
 	public static Adapter getAdapter() {
 		return adapter;
-	}
-	
-	public Adapter() {
-		Gallora.init();
 	}
 	
 	/**
@@ -332,4 +328,9 @@ public abstract class Adapter {
 	 * @param call the action to call
 	 */
 	public abstract void runSync(Runnable call);
+	
+	/**
+	 * Disable the adapter
+	 */
+	public abstract void disable();
 }

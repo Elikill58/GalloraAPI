@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
 import com.elikill58.galloraapi.universal.Adapter;
 import com.elikill58.galloraapi.universal.dataStorage.NegativityAccountStorage;
 import com.elikill58.galloraapi.universal.pluginMessages.AccountUpdateMessage;
-import com.elikill58.galloraapi.universal.pluginMessages.NegativityMessagesManager;
+import com.elikill58.galloraapi.universal.pluginMessages.GalloraMessagesManager;
 
 public class SimpleAccountManager extends NegativityAccountManager {
 
@@ -99,7 +99,7 @@ public class SimpleAccountManager extends NegativityAccountManager {
 		}
 
 		public void sendAccountToProxy(NegativityAccount account) throws IOException {
-			byte[] rawMessage = NegativityMessagesManager.writeMessage(new AccountUpdateMessage(account));
+			byte[] rawMessage = GalloraMessagesManager.writeMessage(new AccountUpdateMessage(account));
 			updateMessageSender.accept(rawMessage);
 		}
 	}

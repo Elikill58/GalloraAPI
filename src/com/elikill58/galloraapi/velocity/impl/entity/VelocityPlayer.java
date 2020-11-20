@@ -17,7 +17,7 @@ import com.elikill58.galloraapi.api.location.World;
 import com.elikill58.galloraapi.api.potion.PotionEffect;
 import com.elikill58.galloraapi.api.potion.PotionEffectType;
 import com.elikill58.galloraapi.universal.Version;
-import com.elikill58.galloraapi.velocity.VelocityNegativity;
+import com.elikill58.galloraapi.velocity.VelocityAdapter;
 
 import net.kyori.adventure.text.Component;
 
@@ -87,7 +87,7 @@ public class VelocityPlayer extends Player {
 	@Override
 	public void sendPluginMessage(String channelId, byte[] writeMessage) {
 		// TODO implement channelID for all channel and not only negativity's one
-		pp.sendPluginMessage(VelocityNegativity.NEGATIVITY_CHANNEL_ID, writeMessage);
+		pp.sendPluginMessage(VelocityAdapter.NEGATIVITY_CHANNEL_ID, writeMessage);
 	}
 
 	@Override

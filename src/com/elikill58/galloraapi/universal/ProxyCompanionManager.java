@@ -1,6 +1,6 @@
 package com.elikill58.galloraapi.universal;
 
-import com.elikill58.galloraapi.universal.pluginMessages.NegativityMessagesManager;
+import com.elikill58.galloraapi.universal.pluginMessages.GalloraMessagesManager;
 
 public class ProxyCompanionManager {
 
@@ -15,7 +15,7 @@ public class ProxyCompanionManager {
 	public static void foundCompanion(int protocolVersion) {
 		foundCompanion = true;
 
-		int ourProtocolVersion = NegativityMessagesManager.PROTOCOL_VERSION;
+		int ourProtocolVersion = GalloraMessagesManager.PROTOCOL_VERSION;
 		Adapter ada = Adapter.getAdapter();
 		if (ada.getConfig().getBoolean("disableProxyIntegration")) {
 			ada.getLogger().info("Proxy companion plugin found, but is forcibly disabled.");

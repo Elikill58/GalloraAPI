@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ClientModsListMessage implements NegativityMessage {
+public class ClientModsListMessage implements GalloraMessage {
 
 	public static final byte MESSAGE_ID = 3;
 
