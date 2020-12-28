@@ -57,26 +57,31 @@ public class PacketGateManager extends SpongePacketManager {
 
 		@Override
 		public void onPacketRead(PacketEvent e, PacketConnection connection) {
-			String[] parts = e.getPacket().getClass().getName().split("\\.");
-			String packetName = parts[parts.length - 1];
-			Optional<Player> optionalPlayer = Sponge.getServer().getPlayer(connection.getPlayerUUID());
-			if (!optionalPlayer.isPresent())
-				return;
-			Player p = optionalPlayer.get();
-			PacketType packetType = null;
-			if (packetName.equalsIgnoreCase("CPacketPlayer"))
-				packetType = PacketType.Client.FLYING;
-			else {
-				String newName = packetName.replaceFirst("CPacket", (e.isOutgoing() ? "PacketPlayOut" : "PacketPlayIn"))
-						.replaceAll("\\$", "").replaceAll("Player", "");
-				packetType = PacketType.getType(newName);
-				if (packetType == null)
-					SpongeAdapter.getAdapter().getLogger().error("Unknow Packet " + packetName + ", parsed as "
-							+ newName + ". Please, report this to Elikill58.");
+			try {
+				Object mcPacket = e.getClass().getMethod("getPacket").invoke(e);
+				String[] parts = mcPacket.getClass().getName().split("\\.");
+				String packetName = parts[parts.length - 1];
+				Optional<Player> optionalPlayer = Sponge.getServer().getPlayer(connection.getPlayerUUID());
+				if (!optionalPlayer.isPresent())
+					return;
+				Player p = optionalPlayer.get();
+				PacketType packetType = null;
+				if (packetName.equalsIgnoreCase("CPacketPlayer"))
+					packetType = PacketType.Client.FLYING;
+				else {
+					String newName = packetName.replaceFirst("CPacket", (e.isOutgoing() ? "PacketPlayOut" : "PacketPlayIn"))
+							.replaceAll("\\$", "").replaceAll("Player", "");
+					packetType = PacketType.getType(newName);
+					if (packetType == null)
+						SpongeAdapter.getAdapter().getLogger().error("Unknow Packet " + packetName + ", parsed as "
+								+ newName + ". Please, report this to Elikill58.");
+				}
+				AbstractPacket packet = e.isOutgoing() ? packetManager.onPacketSent(packetType, p, mcPacket, e)
+						: packetManager.onPacketReceive(packetType, p, mcPacket, e);
+				e.setCancelled(packet.isCancelled());
+			} catch (Exception exc) {
+				exc.printStackTrace();
 			}
-			AbstractPacket packet = e.isOutgoing() ? packetManager.onPacketSent(packetType, p, e.getPacket(), e)
-					: packetManager.onPacketReceive(packetType, p, e.getPacket(), e);
-			e.setCancelled(packet.isCancelled());
 		}
 	}
 }
