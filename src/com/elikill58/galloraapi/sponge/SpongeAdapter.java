@@ -43,6 +43,7 @@ import com.elikill58.galloraapi.api.item.Material;
 import com.elikill58.galloraapi.api.location.Location;
 import com.elikill58.galloraapi.api.location.World;
 import com.elikill58.galloraapi.api.plugin.ExternalPlugin;
+import com.elikill58.galloraapi.api.timers.Scheduler;
 import com.elikill58.galloraapi.api.yaml.config.Configuration;
 import com.elikill58.galloraapi.sponge.impl.entity.SpongeEntityManager;
 import com.elikill58.galloraapi.sponge.impl.entity.SpongeFakePlayer;
@@ -53,6 +54,7 @@ import com.elikill58.galloraapi.sponge.impl.item.SpongeItemBuilder;
 import com.elikill58.galloraapi.sponge.impl.item.SpongeItemRegistrar;
 import com.elikill58.galloraapi.sponge.impl.location.SpongeLocation;
 import com.elikill58.galloraapi.sponge.impl.plugin.SpongeExternalPlugin;
+import com.elikill58.galloraapi.sponge.impl.timers.SpongeScheduler;
 import com.elikill58.galloraapi.sponge.listeners.BlockListeners;
 import com.elikill58.galloraapi.sponge.listeners.EntityListeners;
 import com.elikill58.galloraapi.sponge.listeners.FightManager;
@@ -93,6 +95,7 @@ public class SpongeAdapter extends Adapter {
 	private final TranslationProviderFactory translationProviderFactory;
 	private final SpongeItemRegistrar itemRegistrar;
 	private NegativityPacketManager packetManager;
+	private final SpongeScheduler scheduler;
 
 	public SpongeAdapter(SpongePlugin pl) {
 		this.plugin = pl;
@@ -101,6 +104,7 @@ public class SpongeAdapter extends Adapter {
 		this.translationProviderFactory = new NegativityTranslationProviderFactory(pl.getDataFolder().resolve("messages"), "Negativity", "CheatHover");
 		this.itemRegistrar = new SpongeItemRegistrar();
 		this.packetManager = new NegativityPacketManager(pl);
+		this.scheduler = new SpongeScheduler(pl);
 
 		EventManager eventManager = Sponge.getEventManager();
 		eventManager.registerListeners(pl, new FightManager());
@@ -318,6 +322,11 @@ public class SpongeAdapter extends Adapter {
 	@Override
 	public void runSync(Runnable call) {
 		Task.builder().execute(call).submit(plugin);
+	}
+	
+	@Override
+	public Scheduler getScheduler() {
+		return this.scheduler;
 	}
 	
 	@Override

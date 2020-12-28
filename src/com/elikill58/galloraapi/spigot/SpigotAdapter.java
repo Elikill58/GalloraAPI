@@ -35,6 +35,7 @@ import com.elikill58.galloraapi.api.json.parser.ParseException;
 import com.elikill58.galloraapi.api.location.Location;
 import com.elikill58.galloraapi.api.location.World;
 import com.elikill58.galloraapi.api.plugin.ExternalPlugin;
+import com.elikill58.galloraapi.api.timers.Scheduler;
 import com.elikill58.galloraapi.api.yaml.config.Configuration;
 import com.elikill58.galloraapi.spigot.impl.entity.SpigotFakePlayer;
 import com.elikill58.galloraapi.spigot.impl.entity.SpigotOfflinePlayer;
@@ -44,6 +45,7 @@ import com.elikill58.galloraapi.spigot.impl.item.SpigotItemBuilder;
 import com.elikill58.galloraapi.spigot.impl.item.SpigotItemRegistrar;
 import com.elikill58.galloraapi.spigot.impl.location.SpigotLocation;
 import com.elikill58.galloraapi.spigot.impl.plugin.SpigotExternalPlugin;
+import com.elikill58.galloraapi.spigot.impl.timers.SpigotScheduler;
 import com.elikill58.galloraapi.spigot.listeners.BlockListeners;
 import com.elikill58.galloraapi.spigot.listeners.ChannelListeners;
 import com.elikill58.galloraapi.spigot.listeners.ElytraListeners;
@@ -85,6 +87,7 @@ public class SpigotAdapter extends Adapter {
 	private final SpigotItemRegistrar itemRegistrar;
 	private Configuration config;
 	private NegativityPacketManager packetManager;
+	private final SpigotScheduler scheduler;
 
 	public SpigotAdapter(JavaPlugin pl) {
 		this.pl = pl;
@@ -93,6 +96,7 @@ public class SpigotAdapter extends Adapter {
 				pl.getDataFolder().toPath().resolve("lang"), "Negativity", "CheatHover");
 		this.logger = new JavaLoggerAdapter(pl.getLogger());
 		this.itemRegistrar = new SpigotItemRegistrar();
+		this.scheduler = new SpigotScheduler(pl);
 
 		Version v = Version.getVersion(Utils.VERSION);
 		if (v.equals(Version.HIGHER))
@@ -356,6 +360,11 @@ public class SpigotAdapter extends Adapter {
 	@Override
 	public void runSync(Runnable call) {
 		Bukkit.getScheduler().runTask(pl, call);
+	}
+
+	@Override
+	public Scheduler getScheduler() {
+		return this.scheduler;
 	}
 	
 	@Override

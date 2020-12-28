@@ -22,6 +22,7 @@ import com.elikill58.galloraapi.api.item.Material;
 import com.elikill58.galloraapi.api.location.Location;
 import com.elikill58.galloraapi.api.location.World;
 import com.elikill58.galloraapi.api.plugin.ExternalPlugin;
+import com.elikill58.galloraapi.api.timers.Scheduler;
 import com.elikill58.galloraapi.api.yaml.config.Configuration;
 import com.elikill58.galloraapi.universal.account.NegativityAccountManager;
 import com.elikill58.galloraapi.universal.logger.LoggerAdapter;
@@ -328,6 +329,11 @@ public abstract class Adapter {
 	 * @param call the action to call
 	 */
 	public abstract void runSync(Runnable call);
+	
+	/**
+	 * @return a synchronous scheduler that can be used to schedule task on the server thread.
+	 */
+	public abstract Scheduler getScheduler();
 	
 	/**
 	 * Disable the adapter

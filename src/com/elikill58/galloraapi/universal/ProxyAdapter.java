@@ -9,6 +9,7 @@ import com.elikill58.galloraapi.api.item.ItemRegistrar;
 import com.elikill58.galloraapi.api.item.Material;
 import com.elikill58.galloraapi.api.location.Location;
 import com.elikill58.galloraapi.api.location.World;
+import com.elikill58.galloraapi.api.timers.Scheduler;
 
 public abstract class ProxyAdapter extends Adapter {
 
@@ -45,5 +46,10 @@ public abstract class ProxyAdapter extends Adapter {
 	@Override
 	public FakePlayer createFakePlayer(Location loc, String name) {
 		return null;
+	}
+
+	@Override
+	public Scheduler getScheduler() {
+		throw new UnsupportedOperationException("Scheduler can't be used on proxy servers");
 	}
 }
