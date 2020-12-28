@@ -6,7 +6,7 @@ import com.elikill58.galloraapi.api.entity.OfflinePlayer;
 import com.elikill58.galloraapi.universal.utils.UniversalUtils;
 import com.elikill58.galloraapi.velocity.VelocityAdapter;
 
-public class VelocityOfflinePlayer extends OfflinePlayer {
+public class VelocityOfflinePlayer implements OfflinePlayer {
 
 	private final UUID uuid;
 	

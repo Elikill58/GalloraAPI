@@ -2,7 +2,7 @@ package com.elikill58.galloraapi.spigot.impl.entity;
 
 import com.elikill58.galloraapi.api.commands.CommandSender;
 
-public class SpigotCommandSender extends CommandSender {
+public class SpigotCommandSender implements CommandSender {
 
 	private final org.bukkit.command.CommandSender sender;
 	

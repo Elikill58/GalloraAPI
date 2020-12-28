@@ -2,7 +2,7 @@ package com.elikill58.galloraapi.api;
 
 import com.elikill58.galloraapi.api.location.World;
 
-public abstract class GalloraObject {
+public interface GalloraObject {
 	
 	/**
 	 * Get default object which is abstracted by Negativity structure
@@ -11,5 +11,5 @@ public abstract class GalloraObject {
 	 * 
 	 * @return default object
 	 */
-	public abstract Object getDefault();
+	public Object getDefault();
 }

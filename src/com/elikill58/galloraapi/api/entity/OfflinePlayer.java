@@ -1,53 +1,61 @@
 package com.elikill58.galloraapi.api.entity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+import com.elikill58.galloraapi.api.block.Block;
 import com.elikill58.galloraapi.api.location.Location;
 import com.elikill58.galloraapi.api.location.Vector;
 
-public abstract class OfflinePlayer extends Entity {
+public interface OfflinePlayer extends Entity {
 
-	public abstract UUID getUniqueId();
+	public UUID getUniqueId();
 	
-	public abstract boolean isOnline();
+	public boolean isOnline();
 	
-	public abstract boolean hasPlayedBefore();
+	public boolean hasPlayedBefore();
 	
 	@Override
-	public boolean isOnGround() {
+	public default boolean isOnGround() {
 		return true;
 	}
 	
 	@Override
-	public Location getLocation() {
+	public default Location getLocation() {
 		return null;
 	}
 	
 	@Override
-	public EntityType getType() {
+	public default EntityType getType() {
 		return EntityType.PLAYER;
 	}
 
 	@Override
-	public Location getEyeLocation() {
+	public default Location getEyeLocation() {
 		return null;
 	}
 
 	@Override
-	public Vector getRotation() {
+	public default Vector getRotation() {
 		return null;
 	}
 
 	@Override
-	public void sendMessage(String msg) {}
+	public default void sendMessage(String msg) {}
 	
 	@Override
-	public int getEntityId() {
+	public default int getEntityId() {
 		return 0;
 	}
 	
 	@Override
-	public double getEyeHeight() {
+	public default double getEyeHeight() {
 		return 0;
+	}
+	
+	@Override
+	public default List<Block> getTargetBlock(int maxDistance) {
+		return new ArrayList<Block>();
 	}
 }

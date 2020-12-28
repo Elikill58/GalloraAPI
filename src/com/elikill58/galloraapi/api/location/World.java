@@ -6,7 +6,7 @@ import com.elikill58.galloraapi.api.GalloraObject;
 import com.elikill58.galloraapi.api.block.Block;
 import com.elikill58.galloraapi.api.entity.Entity;
 
-public abstract class World extends GalloraObject {
+public abstract class World implements GalloraObject {
 
 	/**
 	 * Get the world name

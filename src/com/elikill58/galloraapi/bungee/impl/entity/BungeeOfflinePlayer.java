@@ -7,7 +7,7 @@ import com.elikill58.galloraapi.universal.utils.UniversalUtils;
 
 import net.md_5.bungee.api.ProxyServer;
 
-public class BungeeOfflinePlayer extends OfflinePlayer {
+public class BungeeOfflinePlayer implements OfflinePlayer {
 
 	private final UUID uuid;
 	

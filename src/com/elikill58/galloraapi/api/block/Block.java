@@ -5,7 +5,7 @@ import com.elikill58.galloraapi.api.item.Material;
 import com.elikill58.galloraapi.api.location.Location;
 import com.google.common.base.Preconditions;
 
-public abstract class Block extends GalloraObject {
+public abstract class Block implements GalloraObject {
 
 	public abstract Location getLocation();
 	

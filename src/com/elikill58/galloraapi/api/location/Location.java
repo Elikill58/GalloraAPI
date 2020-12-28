@@ -5,7 +5,7 @@ import com.elikill58.galloraapi.api.block.Block;
 import com.elikill58.galloraapi.universal.utils.Maths;
 import com.google.common.base.Preconditions;
 
-public abstract class Location extends GalloraObject implements Cloneable {
+public abstract class Location implements GalloraObject, Cloneable {
 
 	private World w;
 	private double x, y, z;

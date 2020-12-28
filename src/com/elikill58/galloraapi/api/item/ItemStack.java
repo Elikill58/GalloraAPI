@@ -2,7 +2,7 @@ package com.elikill58.galloraapi.api.item;
 
 import com.elikill58.galloraapi.api.GalloraObject;
 
-public abstract class ItemStack extends GalloraObject {
+public abstract class ItemStack implements GalloraObject {
 
 	/**
 	 * Get amount of the item

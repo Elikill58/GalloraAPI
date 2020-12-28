@@ -2,7 +2,7 @@ package com.elikill58.galloraapi.api.item;
 
 import com.elikill58.galloraapi.api.GalloraObject;
 
-public abstract class Material extends GalloraObject {
+public abstract class Material implements GalloraObject {
 
 	/**
 	 * Check if the material can be solid

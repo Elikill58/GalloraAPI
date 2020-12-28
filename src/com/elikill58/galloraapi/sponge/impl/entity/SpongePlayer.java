@@ -49,13 +49,12 @@ import com.elikill58.galloraapi.universal.Version;
 import com.elikill58.galloraapi.universal.support.ViaVersionSupport;
 import com.flowpowered.math.vector.Vector3d;
 
-public class SpongePlayer extends Player {
+public class SpongePlayer extends SpongeEntity<org.spongepowered.api.entity.living.player.Player> implements Player {
 
-	private final org.spongepowered.api.entity.living.player.Player p;
 	private Version playerVersion;
 
 	public SpongePlayer(org.spongepowered.api.entity.living.player.Player p) {
-		this.p = p;
+		super(p);
 		this.playerVersion = loadVersion();
 	}
 	
@@ -65,104 +64,104 @@ public class SpongePlayer extends Player {
 
 	@Override
 	public UUID getUniqueId() {
-		return p.getUniqueId();
+		return entity.getUniqueId();
 	}
 
 	@Override
 	public void sendMessage(String msg) {
-		p.sendMessage(Text.of(msg));
+		entity.sendMessage(Text.of(msg));
 	}
 
 	@Override
 	public boolean isOnGround() {
-		return p.isOnGround();
+		return entity.isOnGround();
 	}
 
 	@Override
 	public boolean isOp() {
-		return p.hasPermission("*");
+		return entity.hasPermission("*");
 	}
 
 	@Override
 	public boolean hasElytra() {
-		return p.get(Keys.IS_ELYTRA_FLYING).orElse(false);
+		return entity.get(Keys.IS_ELYTRA_FLYING).orElse(false);
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean hasLineOfSight(Entity entity) {
-		return LocationUtils.hasLineOfSight(p, (org.spongepowered.api.world.Location<org.spongepowered.api.world.World>) entity.getLocation().getDefault());
+		return LocationUtils.hasLineOfSight(this.entity, (org.spongepowered.api.world.Location<org.spongepowered.api.world.World>) entity.getLocation().getDefault());
 	}
 
 	@Override
 	public float getWalkSpeed() {
-		return (float) (double) p.get(Keys.WALKING_SPEED).get();
+		return (float) (double) entity.get(Keys.WALKING_SPEED).get();
 	}
 
 	@Override
 	public double getHealth() {
-		return p.getOrCreate(HealthData.class).get().health().get();
+		return entity.getOrCreate(HealthData.class).get().health().get();
 	}
 
 	@Override
 	public float getFallDistance() {
-		return p.getOrCreate(FallDistanceData.class).get().fallDistance().get();
+		return entity.getOrCreate(FallDistanceData.class).get().fallDistance().get();
 	}
 
 	@Override
 	public GameMode getGameMode() {
-		return GameMode.get(p.gameMode().get().getName());
+		return GameMode.get(entity.gameMode().get().getName());
 	}
 	
 	@Override
 	public void setGameMode(GameMode gameMode) {
 		switch (gameMode) {
 		case ADVENTURE:
-			p.gameMode().set(GameModes.ADVENTURE);
+			entity.gameMode().set(GameModes.ADVENTURE);
 			break;
 		case CREATIVE:
-			p.gameMode().set(GameModes.CREATIVE);
+			entity.gameMode().set(GameModes.CREATIVE);
 			break;
 		case CUSTOM:
-			p.gameMode().set(GameModes.NOT_SET);
+			entity.gameMode().set(GameModes.NOT_SET);
 			break;
 		case SPECTATOR:
-			p.gameMode().set(GameModes.SPECTATOR);
+			entity.gameMode().set(GameModes.SPECTATOR);
 			break;
 		case SURVIVAL:
-			p.gameMode().set(GameModes.SURVIVAL);
+			entity.gameMode().set(GameModes.SURVIVAL);
 			break;
 		}
 	}
 
 	@Override
 	public void damage(double amount) {
-		p.damage(amount, DamageSource.builder().type(DamageTypes.CUSTOM).build());
+		entity.damage(amount, DamageSource.builder().type(DamageTypes.CUSTOM).build());
 	}
 
 	@Override
 	public Location getLocation() {
-		return new SpongeLocation(p.getLocation());
+		return new SpongeLocation(entity.getLocation());
 	}
 
 	@Override
 	public int getPing() {
-		return p.getConnection().getLatency();
+		return entity.getConnection().getLatency();
 	}
 
 	@Override
 	public World getWorld() {
-		return new SpongeWorld(p.getWorld());
+		return new SpongeWorld(entity.getWorld());
 	}
 
 	@Override
 	public String getName() {
-		return p.getName();
+		return entity.getName();
 	}
 
 	@Override
 	public boolean hasPermission(String perm) {
-		return p.hasPermission(perm);
+		return entity.hasPermission(perm);
 	}
 
 	@Override
@@ -172,77 +171,77 @@ public class SpongePlayer extends Player {
 
 	@Override
 	public void kick(String reason) {
-		p.kick(Text.of(reason));
+		entity.kick(Text.of(reason));
 	}
 
 	@Override
 	public int getLevel() {
-		return p.get(Keys.EXPERIENCE_LEVEL).get();
+		return entity.get(Keys.EXPERIENCE_LEVEL).get();
 	}
 	
 	@Override
 	public double getFoodLevel() {
-		return p.get(Keys.FOOD_LEVEL).get();
+		return entity.get(Keys.FOOD_LEVEL).get();
 	}
 
 	@Override
 	public boolean getAllowFlight() {
-		return p.get(Keys.CAN_FLY).orElse(false);
+		return entity.get(Keys.CAN_FLY).orElse(false);
 	}
 
 	@Override
 	public Entity getVehicle() {
-		return SpongeEntityManager.getEntity(p.getVehicle().orElse(null));
+		return SpongeEntityManager.getEntity(entity.getVehicle().orElse(null));
 	}
 	
 	@Override
 	public ItemStack getItemInHand() {
-		Optional<org.spongepowered.api.item.inventory.ItemStack> opt = p.getItemInHand(HandTypes.MAIN_HAND);
+		Optional<org.spongepowered.api.item.inventory.ItemStack> opt = entity.getItemInHand(HandTypes.MAIN_HAND);
 		return opt.isPresent() ? new SpongeItemStack(opt.get()) : null;
 	}
 
 	@Override
 	public boolean isFlying() {
-		return p.getOrCreate(FlyingData.class).get().flying().get();
+		return entity.getOrCreate(FlyingData.class).get().flying().get();
 	}
 
 	@Override
 	public void sendPluginMessage(String channelId, byte[] writeMessage) {
-		(channelId.equalsIgnoreCase("fml") ? SpongeAdapter.fmlChannel : SpongeAdapter.channel).sendTo(p, (chan) -> chan.writeByteArray(writeMessage));
+		(channelId.equalsIgnoreCase("fml") ? SpongeAdapter.fmlChannel : SpongeAdapter.channel).sendTo(entity, (chan) -> chan.writeByteArray(writeMessage));
 	}
 
 	@Override
 	public boolean isSleeping() {
-		return p.getOrCreate(SleepingData.class).get().sleeping().get();
+		return entity.getOrCreate(SleepingData.class).get().sleeping().get();
 	}
 
 	@Override
 	public boolean isSneaking() {
-		return p.getOrCreate(SneakingData.class).get().sneaking().get();
+		return entity.getOrCreate(SneakingData.class).get().sneaking().get();
 	}
 
 	@Override
 	public double getEyeHeight() {
-		return Utils.getPlayerHeadHeight(p);
+		return Utils.getPlayerHeadHeight(entity);
 	}
 
 	@Override
 	public boolean hasPotionEffect(PotionEffectType type) {
-		return p.getOrCreate(PotionEffectData.class).get().asList().stream().filter((pe) -> pe.getType().getName().equalsIgnoreCase(type.name()))
+		return entity.getOrCreate(PotionEffectData.class).get().asList().stream().filter((pe) -> pe.getType().getName().equalsIgnoreCase(type.name()))
 				.findAny().isPresent();
 	}
 
 	@Override
 	public List<PotionEffect> getActivePotionEffect() {
 		List<PotionEffect> list = new ArrayList<PotionEffect>();
-		p.getOrCreate(PotionEffectData.class).get().asList().forEach((pe) -> list.add(new PotionEffect(PotionEffectType.fromName(pe.getType().getName()))));
+		entity.getOrCreate(PotionEffectData.class).get().asList().forEach((pe) -> list.add(new PotionEffect(PotionEffectType.fromName(pe.getType().getName()))));
 		return list;
 	}
 	
 	@Override
 	public Optional<PotionEffect> getPotionEffect(PotionEffectType type) {
 		org.spongepowered.api.effect.potion.PotionEffect effect = null;
-		for(org.spongepowered.api.effect.potion.PotionEffect pe : p.getOrCreate(PotionEffectData.class).get().asList())
+		for(org.spongepowered.api.effect.potion.PotionEffect pe : entity.getOrCreate(PotionEffectData.class).get().asList())
 			if(PotionEffectType.fromName(pe.getType().getName()) == type)
 				effect = pe;
 		return effect == null ? Optional.empty() : Optional.of(new PotionEffect(type, effect.getDuration(), effect.getAmplifier()));
@@ -250,27 +249,27 @@ public class SpongePlayer extends Player {
 
 	@Override
 	public void removePotionEffect(PotionEffectType type) {
-		Utils.removePotionEffect(p.getOrCreate(PotionEffectData.class).get(), SpongePotionEffectType.getEffect(type));
+		Utils.removePotionEffect(entity.getOrCreate(PotionEffectData.class).get(), SpongePotionEffectType.getEffect(type));
 	}
 
 	@Override
 	public String getIP() {
-		return p.getConnection().getAddress().getAddress().getHostAddress();
+		return entity.getConnection().getAddress().getAddress().getHostAddress();
 	}
 
 	@Override
 	public boolean isOnline() {
-		return p.isOnline();
+		return entity.isOnline();
 	}
 
 	@Override
 	public void setSneaking(boolean b) {
-		p.getOrCreate(SneakingData.class).get().sneaking().set(b);
+		entity.getOrCreate(SneakingData.class).get().sneaking().set(b);
 	}
 
 	@Override
 	public void addPotionEffect(PotionEffectType type, int duration, int amplifier) {
-		PotionEffectData potionEffects = p.getOrCreate(PotionEffectData.class).orElse(null);
+		PotionEffectData potionEffects = entity.getOrCreate(PotionEffectData.class).orElse(null);
 		potionEffects.addElement(org.spongepowered.api.effect.potion.PotionEffect.builder().potionType(SpongePotionEffectType.getEffect(type))
 					.amplifier(amplifier).duration(duration).build());
 	}
@@ -282,7 +281,7 @@ public class SpongePlayer extends Player {
 
 	@Override
 	public boolean isSprinting() {
-		return p.getOrCreate(SprintData.class).get().sprinting().get();
+		return entity.getOrCreate(SprintData.class).get().sprinting().get();
 	}
 
 	@Override
@@ -293,28 +292,28 @@ public class SpongePlayer extends Player {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void teleport(Location loc) {
-		p.setLocation((org.spongepowered.api.world.Location<org.spongepowered.api.world.World>) loc.getDefault());
+		entity.setLocation((org.spongepowered.api.world.Location<org.spongepowered.api.world.World>) loc.getDefault());
 	}
 
 	@Override
 	public boolean isInsideVehicle() {
-		return p.getVehicle().isPresent();
+		return entity.getVehicle().isPresent();
 	}
 
 	@Override
 	public float getFlySpeed() {
-		return (float) (double) p.get(Keys.FLYING_SPEED).get();
+		return (float) (double) entity.get(Keys.FLYING_SPEED).get();
 	}
 
 	@Override
 	public void setSprinting(boolean b) {
-		p.getOrCreate(SprintData.class).get().sprinting().set(b);
+		entity.getOrCreate(SprintData.class).get().sprinting().set(b);
 	}
 
 	@Override
 	public List<Entity> getNearbyEntities(double x, double y, double z) {
 		List<Entity> list = new ArrayList<>();
-		p.getNearbyEntities(x).forEach((entity) -> list.add(SpongeEntityManager.getEntity(entity)));
+		entity.getNearbyEntities(x).forEach((entity) -> list.add(SpongeEntityManager.getEntity(entity)));
 		return list;
 	}
 
@@ -332,7 +331,7 @@ public class SpongePlayer extends Player {
 
 	@Override
 	public ItemStack getItemInOffHand() {
-		Optional<org.spongepowered.api.item.inventory.ItemStack> opt = p.getItemInHand(HandTypes.OFF_HAND);
+		Optional<org.spongepowered.api.item.inventory.ItemStack> opt = entity.getItemInHand(HandTypes.OFF_HAND);
 		return opt.isPresent() ? new SpongeItemStack(opt.get()) : null;
 	}
 
@@ -343,33 +342,33 @@ public class SpongePlayer extends Player {
 
 	@Override
 	public Vector getVelocity() {
-		Vector3d vel = p.getVelocity();
+		Vector3d vel = entity.getVelocity();
 		return new Vector(vel.getX(), vel.getY(), vel.getZ());
 	}
 
 	@Override
 	public PlayerInventory getInventory() {
-		return new SpongePlayerInventory(p, p.getInventory());
+		return new SpongePlayerInventory(entity, entity.getInventory());
 	}
 	
 	@Override
 	public boolean hasOpenInventory() {
-		return p.getOpenInventory().isPresent() && p.getOpenInventory().get().getArchetype().equals(InventoryArchetypes.CHEST);
+		return entity.getOpenInventory().isPresent() && entity.getOpenInventory().get().getArchetype().equals(InventoryArchetypes.CHEST);
 	}
 
 	@Override
 	public Inventory getOpenInventory() {
-		return p.getOpenInventory().isPresent() ? null : new SpongeInventory(p.getOpenInventory().get());
+		return entity.getOpenInventory().isPresent() ? null : new SpongeInventory(entity.getOpenInventory().get());
 	}
 
 	@Override
 	public void openInventory(Inventory inv) {
-		p.openInventory((org.spongepowered.api.item.inventory.Inventory) inv.getDefault());
+		entity.openInventory((org.spongepowered.api.item.inventory.Inventory) inv.getDefault());
 	}
 
 	@Override
 	public void closeInventory() {
-		Task.builder().execute(() -> p.closeInventory()).submit(SpongeAdapter.getPlugin());
+		Task.builder().execute(() -> entity.closeInventory()).submit(SpongeAdapter.getPlugin());
 	}
 
 	@Override
@@ -379,7 +378,7 @@ public class SpongePlayer extends Player {
 
 	@Override
 	public void setAllowFlight(boolean b) {
-		p.offer(Keys.CAN_FLY, b);
+		entity.offer(Keys.CAN_FLY, b);
 	}
 
 	@Override
@@ -394,33 +393,23 @@ public class SpongePlayer extends Player {
 
 	@Override
 	public void setVelocity(Vector vel) {
-		p.setVelocity(new Vector3d(vel.getX(), vel.getY(), vel.getZ()));
-	}
-
-	@Override
-	public Object getDefault() {
-		return p;
+		entity.setVelocity(new Vector3d(vel.getX(), vel.getY(), vel.getZ()));
 	}
 	
 	@Override
 	public Location getEyeLocation() {
-		Vector3d vec = p.getProperty(EyeLocationProperty.class).map(EyeLocationProperty::getValue).orElse(p.getRotation());
-		return new SpongeLocation(new SpongeWorld(p.getWorld()), vec.getX(), vec.getY(), vec.getZ());
+		Vector3d vec = entity.getProperty(EyeLocationProperty.class).map(EyeLocationProperty::getValue).orElse(entity.getRotation());
+		return new SpongeLocation(new SpongeWorld(entity.getWorld()), vec.getX(), vec.getY(), vec.getZ());
 	}
 	
 	@Override
 	public Vector getRotation() {
-		Vector3d vec = p.getRotation();
+		Vector3d vec = entity.getRotation();
 		return new Vector(vec.getX(), vec.getY(), vec.getZ());
 	}
 	
 	@Override
-	public int getEntityId() {
-		return 0;
-	}
-	
-	@Override
 	public InetSocketAddress getAddress() {
-		return p.getConnection().getVirtualHost();
+		return entity.getConnection().getVirtualHost();
 	}
 }

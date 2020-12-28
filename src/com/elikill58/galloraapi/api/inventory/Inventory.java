@@ -11,7 +11,7 @@ import com.elikill58.galloraapi.api.item.Materials;
 import com.elikill58.galloraapi.universal.Adapter;
 import com.elikill58.galloraapi.universal.Messages;
 
-public abstract class Inventory extends GalloraObject {
+public abstract class Inventory implements GalloraObject {
 	
 	/**
 	 * Get the inventory type

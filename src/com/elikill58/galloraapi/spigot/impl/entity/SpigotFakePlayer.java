@@ -12,6 +12,7 @@ import java.util.concurrent.CompletableFuture;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import com.elikill58.galloraapi.api.entity.AbstractEntity;
 import com.elikill58.galloraapi.api.entity.FakePlayer;
 import com.elikill58.galloraapi.api.location.Location;
 import com.elikill58.galloraapi.api.location.Vector;
@@ -20,7 +21,7 @@ import com.elikill58.galloraapi.spigot.utils.PacketUtils;
 import com.elikill58.galloraapi.universal.Version;
 import com.elikill58.galloraapi.universal.utils.ReflectionUtils;
 
-public class SpigotFakePlayer extends FakePlayer {
+public class SpigotFakePlayer extends AbstractEntity implements FakePlayer {
 
 	// For reflection -- To don't make a lot of time the same request
 	private static Class<?> gameProfileClass;

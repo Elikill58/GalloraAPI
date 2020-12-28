@@ -1,11 +1,11 @@
 package com.elikill58.galloraapi.api.entity;
 
-public abstract class Arrow extends Entity {
+public interface Arrow extends Entity {
 	
 	/**
 	 * Get the entity which shoot the arrow
 	 * 
 	 * @return entity which shoot
 	 */
-	public abstract Entity getShooter();
+	public Entity getShooter();
 }
