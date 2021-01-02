@@ -10,3 +10,5 @@
 !/gradle.properties
 !/gradlew
 !/gradlew.bat
+
+!/dependenciesJars
