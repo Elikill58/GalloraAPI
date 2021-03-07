@@ -58,4 +58,9 @@ public interface OfflinePlayer extends Entity {
 	public default List<Block> getTargetBlock(int maxDistance) {
 		return new ArrayList<Block>();
 	}
+	
+	@Override
+	public default BoundingBox getBoundingBox() {
+		return null;
+	}
 }

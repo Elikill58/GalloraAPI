@@ -25,5 +25,7 @@ public interface Entity extends CommandSender {
 	public EntityType getType();
 	
 	public int getEntityId();
+	
+	BoundingBox getBoundingBox();
 
 }
